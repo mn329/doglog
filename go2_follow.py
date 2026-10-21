@@ -5,6 +5,7 @@ import os
 import time
 
 import cv2
+from config import GO2_IP, GO2_AES_KEY
 from hand_control import detect, compute_cmd, close, set_gamma, adjust_exposure, overexposed_ratio, draw_hands
 from unitree_webrtc_connect import (
     UnitreeWebRTCConnection,
@@ -260,14 +261,17 @@ class Go2HandFollower:
 def main():
     """メイン処理"""
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ip", required=True, help="Go2のIPアドレス (STAモード)")
-    ap.add_argument("--aes-key", default=None, help="新ファームウェア用 AES-128 キー(32桁hex)")
+    ap.add_argument("--ip", default=GO2_IP, help="Go2のIPアドレス (STAモード)。省略時は .env の GO2_IP")
+    ap.add_argument("--aes-key", default=GO2_AES_KEY,
+                    help="新ファームウェア用 AES-128 キー(32桁hex)。省略時は .env の GO2_AES_KEY")
     ap.add_argument("--dry-run", action="store_true", help="ロボットを動かさず検出と指令値の表示のみ")
     ap.add_argument("--gamma", type=float, default=1.0,
                     help="白飛び対策の明るさ補正。1.0 で補正なし、1.5〜2.5 で明るい部分を暗くする")
     ap.add_argument("--record", action="store_true",
                     help="受信した映像を recordings/ に動画で保存する(明るさ補正の前の映像)")
     args = ap.parse_args()
+    if args.ip is None:
+        ap.error("Go2 の IP がありません。.env に GO2_IP を書くか --ip で指定してください")
     set_gamma(args.gamma)
 
     follower = Go2HandFollower(args.ip, args.aes_key, args.dry_run, args.record)

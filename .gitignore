@@ -10,3 +10,6 @@ models/
 # 手や顔が写った映像・計測データは入れない
 measure_out/
 recordings/
+
+# Go2 の IP や AES キー
+.env

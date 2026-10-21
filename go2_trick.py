@@ -4,6 +4,7 @@ import time
 
 import cv2
 import av
+from config import GO2_IP, GO2_AES_KEY
 from hand_control import finger_cos, set_gamma, right_hand, gesture_of, draw_hands, EXTENDED_COS, FOLDED_COS
 from go2_follow import Go2HandFollower, _convert_and_detect
 from unitree_webrtc_connect import SPORT_CMD
@@ -225,8 +226,9 @@ class Go2Trick(Go2HandFollower):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ip", help="Go2のIPアドレス (STAモード)")
-    ap.add_argument("--aes-key", default=None, help="新ファームウェア用 AES-128 キー(32桁hex)")
+    ap.add_argument("--ip", default=GO2_IP, help="Go2のIPアドレス (STAモード)。省略時は .env の GO2_IP")
+    ap.add_argument("--aes-key", default=GO2_AES_KEY,
+                    help="新ファームウェア用 AES-128 キー(32桁hex)。省略時は .env の GO2_AES_KEY")
     ap.add_argument("--dry-run", action="store_true", help="ロボットを動かさず判定結果の表示のみ")
     ap.add_argument("--webcam", type=int, default=None, metavar="N",
                     help="Go2 の代わりに Mac のカメラ N で試す(ロボットは動かさない)")
@@ -235,7 +237,7 @@ def main():
     args = ap.parse_args()
     set_gamma(args.gamma)
     if args.ip is None and args.webcam is None:
-        ap.error("--ip か --webcam のどちらかを指定してください")
+        ap.error("Go2 の IP がありません。.env に GO2_IP を書くか --ip で指定してください(実機なしなら --webcam 0)")
 
     trick = Go2Trick(args.ip, args.aes_key, args.dry_run, args.webcam)
     try:
