@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import json
+import os
 import time
 
 import cv2
@@ -17,11 +18,36 @@ SMOOTH = 0.4            # 0〜1。小さいほどなめらか(遅延は増える
 LOST_TIMEOUT = 0.5      # 手を見失ってから停止するまでの秒数
 REPLY_TIMEOUT = 0.5     # ロボットからの応答をこの秒数以上は待たない
 SPORT_NAME = {v: k for k, v in SPORT_CMD.items()}   # ログ表示用
+RECORD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "recordings")
+RECORD_FPS = 14         # Go2 の映像は約 14 fps
 
 
-def _convert_and_detect(av_frame):
+class Recorder:
+    """受信した映像を、明るさ補正をかける前の状態で動画ファイルに保存する(手の検出方法の比較用)"""
+
+    def __init__(self):
+        os.makedirs(RECORD_DIR, exist_ok=True)
+        self.path = os.path.join(RECORD_DIR, time.strftime("%Y%m%d_%H%M%S") + ".mp4")
+        self.writer = None
+
+    def write(self, frame):
+        if self.writer is None:     # 映像の大きさは最初のフレームが来るまでわからない
+            h, w = frame.shape[:2]
+            self.writer = cv2.VideoWriter(self.path, cv2.VideoWriter_fourcc(*"mp4v"), RECORD_FPS, (w, h))
+        self.writer.write(frame)
+
+    def close(self):
+        if self.writer is not None:
+            self.writer.release()
+            self.writer = None
+            print(f"録画を保存しました: {self.path}")
+
+
+def _convert_and_detect(av_frame, recorder=None):
     """受信フレームを BGR 画像に変換し、明るさ補正をかけてハンドジェスチャーを検出"""
     raw = av_frame.to_ndarray(format="bgr24")
+    if recorder is not None:
+        recorder.write(raw)
     frame = adjust_exposure(raw)
     return frame, detect(frame), overexposed_ratio(raw)
 
@@ -29,16 +55,18 @@ def _convert_and_detect(av_frame):
 class Go2HandFollower:
     """Go2ロボット用ハンドジェスチャー追従コントローラー"""
 
-    def __init__(self, robot_ip, aes_key=None, dry_run=False):
+    def __init__(self, robot_ip, aes_key=None, dry_run=False, record=False):
         """
         Args:
             robot_ip: Go2ロボットのIPアドレス
             aes_key: 新しめのファームウェアで必要な AES-128 キー(32桁hex)
             dry_run: True ならロボットを動かさず表示のみ
+            record: True なら受信した映像を recordings/ に保存する
         """
         self.robot_ip = robot_ip
         self.aes_key = aes_key
         self.dry_run = dry_run
+        self.recorder = Recorder() if record else None
         self.conn = None
         self.latest_frame = None    # 最新フレームのみ保持(古いフレームは捨てて遅延を防ぐ)
         self.frame_id = 0           # 受信したフレームの通し番号(同じフレームを二度処理しないため)
@@ -108,7 +136,7 @@ class Go2HandFollower:
                 last_id = self.frame_id
                 # 画像変換とハンドジェスチャー検出は別スレッドで行う。
                 # 同じスレッドで行うと、その間 WebRTC の受信が止まり映像が乱れ遅れる
-                frame, hands, white = await asyncio.to_thread(_convert_and_detect, self.latest_frame)
+                frame, hands, white = await asyncio.to_thread(_convert_and_detect, self.latest_frame, self.recorder)
                 now = time.time()
                 fps += 0.1 * (1.0 / max(now - last_t, 1e-3) - fps)   # 処理fps(移動平均)
                 last_t = now
@@ -136,6 +164,9 @@ class Go2HandFollower:
                             0.7, (0, 255, 0) if self.moving else (0, 0, 255), 2)
                 cv2.putText(frame, f"{fps:.0f} fps  white {white * 100:.0f}%", (10, 60),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+                if self.recorder is not None:
+                    cv2.putText(frame, "REC", (frame.shape[1] - 80, 30),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
                 cv2.imshow('Go2 Hand Follow', frame)
 
                 if cv2.waitKey(1) & 0xFF == 27:  # ESCキーで終了
@@ -220,6 +251,8 @@ class Go2HandFollower:
         if self.conn is not None:
             await self._stop()
             await self.conn.disconnect()
+        if self.recorder is not None:
+            self.recorder.close()
         close()
         cv2.destroyAllWindows()
 
@@ -232,10 +265,12 @@ def main():
     ap.add_argument("--dry-run", action="store_true", help="ロボットを動かさず検出と指令値の表示のみ")
     ap.add_argument("--gamma", type=float, default=1.0,
                     help="白飛び対策の明るさ補正。1.0 で補正なし、1.5〜2.5 で明るい部分を暗くする")
+    ap.add_argument("--record", action="store_true",
+                    help="受信した映像を recordings/ に動画で保存する(明るさ補正の前の映像)")
     args = ap.parse_args()
     set_gamma(args.gamma)
 
-    follower = Go2HandFollower(args.ip, args.aes_key, args.dry_run)
+    follower = Go2HandFollower(args.ip, args.aes_key, args.dry_run, args.record)
     try:
         asyncio.run(follower.run())
     except KeyboardInterrupt:
