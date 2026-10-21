@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.DS_Store
+.vscode/
+.claude/settings.local.json
+
+# モデルは README の手順でダウンロードする
+models/
+
+# 手や顔が写った映像・計測データは入れない
+measure_out/
+recordings/

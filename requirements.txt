@@ -1,0 +1,6 @@
+# 動作確認済みのバージョンに固定(mediapipe 1.x は mp.solutions が無く動かない)
+# models/gesture_recognizer.task も必要(README のセットアップ参照)
+mediapipe==0.10.14
+opencv-python==4.10.0.84
+numpy==1.26.4
+unitree_webrtc_connect==2.2.0
