@@ -13,3 +13,8 @@ recordings/
 
 # Go2 の IP や AES キー
 .env
+
+# 検出方法の比較(experiments/)の仮想環境・モデル・結果
+experiments/.venv/
+experiments/models/
+experiments/compare_out/

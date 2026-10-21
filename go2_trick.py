@@ -75,8 +75,8 @@ def fingers_label(cos):
 class Go2Trick(Go2HandFollower):
     """ジェスチャーで お手 / おすわり をさせるデモ"""
 
-    def __init__(self, robot_ip, aes_key=None, dry_run=False, webcam=None):
-        super().__init__(robot_ip, aes_key, dry_run or webcam is not None)
+    def __init__(self, robot_ip, aes_key=None, dry_run=False, webcam=None, record=False):
+        super().__init__(robot_ip, aes_key, dry_run or webcam is not None, record)
         self.webcam = webcam    # カメラ番号。指定時は Go2 に接続せず Mac のカメラで試す
         self.sitting = False
         self._trick_task = None     # 実行中の動作
@@ -105,6 +105,8 @@ class Go2Trick(Go2HandFollower):
             await super().disconnect()
             return
         self.cap.release()
+        if self.recorder is not None:
+            self.recorder.close()
         cv2.destroyAllWindows()
 
     async def _sport(self, name):
@@ -160,7 +162,7 @@ class Go2Trick(Go2HandFollower):
                     await asyncio.sleep(0.005)
                     continue
                 last_id = self.frame_id
-                frame, hands, white = await asyncio.to_thread(_convert_and_detect, self.latest_frame)
+                frame, hands, white = await asyncio.to_thread(_convert_and_detect, self.latest_frame, self.recorder)
                 now = time.time()
 
                 # 同じジェスチャーを HOLD_SEC 続けたら確定
@@ -208,6 +210,9 @@ class Go2Trick(Go2HandFollower):
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
                 cv2.putText(frame, f"white {white * 100:.0f}%", (10, 150),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+                if self.recorder is not None:
+                    cv2.putText(frame, "REC", (frame.shape[1] - 80, 30),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
                 cv2.imshow('Go2 Trick', frame)
 
                 key = cv2.waitKey(1) & 0xFF
@@ -234,12 +239,14 @@ def main():
                     help="Go2 の代わりに Mac のカメラ N で試す(ロボットは動かさない)")
     ap.add_argument("--gamma", type=float, default=1.0,
                     help="白飛び対策の明るさ補正。1.0 で補正なし、1.5〜2.5 で明るい部分を暗くする")
+    ap.add_argument("--record", action="store_true",
+                    help="受信した映像を recordings/ に動画で保存する(明るさ補正の前の映像)")
     args = ap.parse_args()
     set_gamma(args.gamma)
     if args.ip is None and args.webcam is None:
         ap.error("Go2 の IP がありません。.env に GO2_IP を書くか --ip で指定してください(実機なしなら --webcam 0)")
 
-    trick = Go2Trick(args.ip, args.aes_key, args.dry_run, args.webcam)
+    trick = Go2Trick(args.ip, args.aes_key, args.dry_run, args.webcam, args.record)
     try:
         asyncio.run(trick.run())
     except KeyboardInterrupt:
