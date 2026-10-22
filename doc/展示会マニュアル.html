@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go2 展示会マニュアル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: one reading column; the top is a "control panel" (stop key + gestures) staff can glance at, then reference sections below */
+:root {
+  --bg: #f3f4f1;
+  --surface: #ffffff;
+  --ink: #1d2428;
+  --muted: #5d676d;
+  --line: #d9dcd6;
+  --tape: #f2c200;       /* floor-tape yellow: the 1m safety line */
+  --tape-ink: #1d2428;
+  --stop: #c8321e;
+  --stop-soft: #fbe9e5;
+  --ok: #2f7a4b;
+  --ok-soft: #e4f2e8;
+  --warn-soft: #fdf4d3;
+  --kbd: #eceee9;
+  --display: "Dela Gothic One", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15191b; --surface: #1e2427; --ink: #e8ebe6; --muted: #9aa3a8; --line: #323a3e;
+    --tape: #e5b800; --tape-ink: #15191b; --stop: #ff6b55; --stop-soft: #3a1f1a;
+    --ok: #6fcf93; --ok-soft: #1b3324; --warn-soft: #3a3216; --kbd: #2a3135; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15191b; --surface: #1e2427; --ink: #e8ebe6; --muted: #9aa3a8; --line: #323a3e;
+  --tape: #e5b800; --tape-ink: #15191b; --stop: #ff6b55; --stop-soft: #3a1f1a;
+  --ok: #6fcf93; --ok-soft: #1b3324; --warn-soft: #3a3216; --kbd: #2a3135; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 880px; margin: 0 auto; padding-inline: 16px; padding-block: 0 64px; }
+h1, h2 { font-family: var(--display); font-weight: 400; text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.7rem, 5vw, 2.4rem); }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.05rem; margin: 0; font-weight: 700; }
+p { margin: 0; }
+code, kbd { font-family: var(--mono); font-size: .88em; }
+code { background: var(--kbd); padding: .1em .4em; border-radius: 4px; overflow-wrap: anywhere; }
+kbd { display: inline-block; min-width: 1.9em; text-align: center; background: var(--surface); border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 6px; padding: .05em .45em; font-weight: 600; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--tape); outline-offset: 2px; }
+
+/* tape stripe: the safety line motif */
+.tape { height: 10px; background: repeating-linear-gradient(-45deg, var(--tape) 0 14px, var(--tape-ink) 14px 28px); }
+
+header { padding-block: 28px 20px; display: grid; gap: 10px; }
+.eyebrow { font-size: .78rem; letter-spacing: .12em; color: var(--muted); font-weight: 700; }
+.lede { color: var(--muted); max-width: 62ch; }
+.rule { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { font-size: .82rem; font-weight: 700; padding: .2em .75em; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); }
+.pill.no { background: var(--stop-soft); border-color: transparent; color: var(--stop); }
+.pill.yes { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); margin-inline: -16px; padding: 8px 16px; overflow-x: auto; white-space: nowrap; }
+nav a { display: inline-block; font-size: .85rem; text-decoration: none; padding: .25em .7em; border-radius: 6px; color: var(--muted); font-weight: 500; }
+nav a:hover { background: var(--surface); color: var(--ink); }
+
+section { padding-block: 36px 0; display: grid; gap: 16px; scroll-margin-top: 56px; }
+section > header { padding: 0; gap: 4px; }
+.sub { color: var(--muted); font-size: .92rem; }
+
+/* control panel */
+.panel { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; padding-top: 24px; }
+@media (max-width: 720px) { .panel { grid-template-columns: minmax(0, 1fr); } }
+.stop { background: var(--stop); color: #fff; border-radius: 14px; padding: 22px; display: grid; gap: 12px; align-content: start; }
+.stop .label { font-size: .8rem; letter-spacing: .12em; font-weight: 700; opacity: .9; }
+.stop .key { font-family: var(--mono); font-weight: 600; font-size: 1.6rem; background: #fff; color: var(--stop); border-radius: 10px; padding: .35em .6em; text-align: center; border-bottom: 5px solid rgba(0,0,0,.25); }
+.stop p { font-size: .95rem; }
+.stop .then { font-size: .85rem; opacity: .92; border-top: 1px solid rgba(255,255,255,.35); padding-top: 10px; }
+.gestures { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 12px; }
+.ghead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.ghead span { font-size: .85rem; color: var(--muted); }
+.ggrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.g { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 2px 10px; align-items: center; padding: 10px; border-radius: 10px; background: var(--bg); }
+.g .hand { grid-row: span 2; font-size: 2rem; line-height: 1; text-align: center; }
+.g b { font-size: 1rem; }
+.g small { color: var(--muted); font-size: .8rem; line-height: 1.45; }
+.g .k { font-size: .75rem; }
+.gnote { font-size: .85rem; color: var(--muted); display: grid; gap: 2px; padding-left: 1.1em; margin: 0; }
+
+/* tables */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .78rem; letter-spacing: .06em; color: var(--muted); font-weight: 700; background: var(--bg); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 700; }
+tr.hot td { background: var(--stop-soft); }
+
+ul.list, ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+ol.steps li::marker { font-family: var(--mono); font-weight: 600; color: var(--muted); }
+.callout { border-radius: 10px; padding: 12px 14px; font-size: .93rem; background: var(--warn-soft); }
+.callout.red { background: var(--stop-soft); }
+
+/* checklist */
+.check { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 6px 4px; }
+.check label { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: 8px; padding: 10px 12px; border-radius: 8px; cursor: pointer; align-items: start; }
+.check label:hover { background: var(--bg); }
+.check input { width: 1.15rem; height: 1.15rem; margin: .3rem 0 0; accent-color: var(--ok); }
+.check input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+.check span small { display: block; color: var(--muted); font-size: .84rem; }
+.checkbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.progress { font-family: var(--mono); font-size: .9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+button { font: inherit; font-size: .85rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: .3em .9em; cursor: pointer; }
+button:hover { background: var(--bg); }
+
+/* filters */
+.filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.f { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 4px; align-content: start; }
+.f code { justify-self: start; }
+.f p { font-size: .88rem; color: var(--muted); }
+
+.modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.mode { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+.mode.rec { border: 2px solid var(--ok); }
+.mode .tag { justify-self: start; font-size: .75rem; font-weight: 700; padding: .1em .6em; border-radius: 999px; background: var(--ok-soft); color: var(--ok); }
+.mode .file { font-family: var(--mono); font-size: .8rem; background: var(--kbd); border-radius: 6px; padding: .3em .5em; overflow-wrap: anywhere; }
+.mode ul { margin: 0; padding-left: 1.1em; font-size: .88rem; display: grid; gap: 2px; }
+.mode .minus { color: var(--muted); }
+.twocol { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.twocol > div { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.grade { font-weight: 700; font-family: var(--mono); }
+pre { margin: 0; background: var(--kbd); border-radius: 10px; padding: 14px; overflow-x: auto; font-family: var(--mono); font-size: .85rem; line-height: 1.6; }
+.pending { border: 2px dashed var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 8px; }
+footer { margin-top: 40px; font-size: .82rem; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+</head>
+<body>
+
+
+<div class="tape" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">GO2 AIR ・ お手・おすわりデモ ・ スタッフ用</div>
+    <h1>Go2 展示会マニュアル</h1>
+    <p class="lede">プログラムを知らなくても、この順に進めれば動かせます。Go2 はその場から歩かず、手の形を見て お手・おすわり・立つ・首かしげ をします。</p>
+    <div class="rule">
+      <span class="pill yes">使う: お手・おすわりデモ（展示会スタート の起動ファイル）</span>
+      <span class="pill no">使わない: 追従デモ（go2_follow.py）</span>
+      <span class="pill no">使わない: ハート</span>
+    </div>
+  </header>
+
+  <nav aria-label="目次">
+    <a href="#panel">早見表</a><a href="#safety">安全</a><a href="#connect">つなぎ方</a><a href="#today">当日チェック</a><a href="#stop">止める</a><a href="#crowd">人が多いとき</a><a href="#victory">チョキの動き</a><a href="#trouble">困ったとき</a><a href="#prep">事前準備</a>
+  </nav>
+
+  <div class="panel" id="panel">
+    <div class="stop">
+      <div class="label">止めたいときは</div>
+      <div class="key">スペース</div>
+      <p><b>すぐ止めて一時停止</b>します。画面に <code style="background:rgba(255,255,255,.2);color:#fff">PAUSED</code> と出て、手には反応しなくなります。もう一度押すと再開します。</p>
+      <p class="then">押す前に、映像のウィンドウを一度クリックしておく。<br>それでも止まらない・倒れそうなら、スマホのアプリかリモコンで止める。</p>
+    </div>
+
+    <div class="gestures">
+      <div class="ghead"><h3>お客さんの手の形</h3><span>右手で 1.5 秒そのまま</span></div>
+      <div class="ggrid">
+        <div class="g"><div class="hand" aria-hidden="true">✋</div><b>パー → お手</b><small>右前足を上げる。座っていれば先に立つ <kbd class="k">h</kbd></small></div>
+        <div class="g"><div class="hand" aria-hidden="true">☝️</div><b>人差し指 → おすわり</b><small>中指は軽く曲げればよい <kbd class="k">s</kbd></small></div>
+        <div class="g"><div class="hand" aria-hidden="true">✊</div><b>グー → 立つ</b><small>座っているときだけ <kbd class="k">u</kbd></small></div>
+        <div class="g"><div class="hand" aria-hidden="true">✌️</div><b>チョキ → 首かしげ</b><small>座っているときは何もしない <kbd class="k">v</kbd></small></div>
+      </div>
+      <ul class="gnote">
+        <li>Go2 から約 1m、<b>手のひらを Go2 の顔に向けて、指を上に</b>。</li>
+        <li>左手・遠くの手・下を向いた手には反応しない。</li>
+        <li>動いている約 4 秒（画面に赤い <code>BUSY</code>）は受け付けない。同じ形をもう一度させるには、一度手を下ろす。</li>
+        <li>キー（<kbd>h</kbd> <kbd>s</kbd> <kbd>u</kbd> <kbd>v</kbd>）はスタッフ用。一時停止中も効く。<kbd>ESC</kbd> で止めて終了。</li>
+      </ul>
+    </div>
+  </div>
+
+  <section id="safety">
+    <header><h2>安全のルール</h2><p class="sub">最初に読む</p></header>
+    <ul class="list">
+      <li><b>Go2 のまわり 1m にロープやテープで線を引き</b>、お客さんは線の外から手を見せる。</li>
+      <li>小さな子どもが Go2 に近づいたら、スタッフが間に入る。</li>
+      <li>お手をするのは<b>右前足</b>。足が下りてくる場所に手を置かないよう「手は足の少し前に、ひらを見せて」と声をかける。</li>
+      <li>迷ったら<b>スペースキー</b>。それでも止まらなければアプリかリモコン。</li>
+      <li>Go2 を持ち上げたり、動いているときに触ったりしない。</li>
+      <li><b>ハートは使わない。</b>後ろ足で立ち上がる大きな動きで、倒れたり人に当たったりするおそれがある。チョキでは代わりに首かしげをする。</li>
+    </ul>
+  </section>
+
+  <section id="connect">
+    <header><h2>つなぎ方を選ぶ</h2><p class="sub">Go2 と Mac のつなぎ方は 3 通り。事前に試して動いたものを当日使う。会場の Wi-Fi は使わない</p></header>
+    <div class="modes">
+      <div class="mode rec">
+        <span class="tag">いちばん簡単</span>
+        <h3>Go2 直結（AP モード）</h3>
+        <div class="file">展示会スタート(Go2直結).command</div>
+        <ul>
+          <li>ルーターもスマホも要らない</li>
+          <li>Go2 の IP は 192.168.12.1 に決まっていて、変わらない</li>
+          <li class="minus">Go2 を AP モードに切り替える必要がある</li>
+          <li class="minus">Mac はその間インターネットに出られない（デモには影響なし）</li>
+          <li class="minus">Air で使えるかは未確認</li>
+        </ul>
+      </div>
+      <div class="mode">
+        <h3>持ち運び用ルーター</h3>
+        <div class="file">展示会スタート.command</div>
+        <ul>
+          <li>安定している。Mac もインターネットを使える</li>
+          <li class="minus">ルーターによっては IP の自動検索が通らない</li>
+        </ul>
+      </div>
+      <div class="mode">
+        <h3>スマホのテザリング</h3>
+        <div class="file">展示会スタート.command</div>
+        <ul>
+          <li>ルーターが要らない</li>
+          <li class="minus">iPhone は「互換性を優先」をオン（2.4GHz）</li>
+          <li class="minus">スマホは充電しながら専用に。電話や電池切れで切れる</li>
+          <li class="minus">IP の自動検索が通らないことがある</li>
+        </ul>
+      </div>
+    </div>
+    <div class="twocol">
+      <div>
+        <h3>Go2 直結のつなぎ方</h3>
+        <ol class="steps">
+          <li>アプリで Go2 の Wi-Fi の設定を <b>AP モード</b>（Go2 が自分で Wi-Fi を出す）にする。Wi-Fi の名前とパスワードを控える</li>
+          <li>アプリを完全に終了する</li>
+          <li>Mac の Wi-Fi を Go2 の Wi-Fi に切り替える</li>
+          <li><code>展示会スタート(Go2直結).command</code> をダブルクリック</li>
+        </ol>
+        <p class="sub">ルーターやテザリングに戻すときは、アプリで Go2 を STA モード（ほかの Wi-Fi につなぐ）に戻す。</p>
+      </div>
+      <div>
+        <h3>テザリングのつなぎ方</h3>
+        <ol class="steps">
+          <li>スマホのテザリングをオン（iPhone は「互換性を優先」も）</li>
+          <li>アプリで Go2 の接続先 Wi-Fi をテザリングに変える</li>
+          <li>Mac もテザリングにつなぐ</li>
+          <li><code>展示会スタート.command</code> をダブルクリック</li>
+        </ol>
+        <p class="sub">「見つかりませんでした」で接続できないときは、アプリで Go2 の IP（172.20.10.x のような番号）を調べ、<code>.env</code> の <code>GO2_IP</code> を書き換える。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="today">
+    <header><h2>当日の起動チェック</h2><p class="sub">上から順に。チェックはこの端末のブラウザにだけ残ります</p></header>
+    <div class="check" id="checklist">
+      <label><input type="checkbox" id="c1"><span>Go2 の電源を入れ、立ち上がるまで約 1 分待つ</span></label>
+      <label><input type="checkbox" id="c2"><span>アプリで Go2 が<b>立っている</b>ことを確かめる<small>座っていたらアプリで立たせる。プログラムは「立っている」前提で始まる</small></span></label>
+      <label><input type="checkbox" id="c3"><span><b>アプリを完全に終了する</b>（上にスワイプして閉じる）<small>つながったままだと Mac からつながらない（RobotBusyError）</small></span></label>
+      <label><input type="checkbox" id="c4"><span>Mac を、選んだ Wi-Fi（Go2 の Wi-Fi／ルーター／テザリング）につなぐ</span></label>
+      <label><input type="checkbox" id="c5"><span>Finder で <code>go2-hand-follow</code> を開き、<b>起動ファイルをダブルクリック</b><small>Go2 直結なら <code>展示会スタート(Go2直結).command</code>、それ以外は <code>展示会スタート.command</code>。初回に「開いてよいか」と聞かれたら、右クリック →「開く」</small></span></label>
+      <label><input type="checkbox" id="c6"><span>「接続OK」と出て、カメラ映像のウィンドウが開く<small>ルーター・テザリングでは、その前に「見つけました」と出る</small></span></label>
+      <label><input type="checkbox" id="c7"><span>自分の右手でパー・人差し指・グー・チョキを試す</span></label>
+      <label><input type="checkbox" id="c8"><span>スペースキーで止まり、もう一度押すと再開することを確かめる</span></label>
+      <label><input type="checkbox" id="c9"><span>1m の線を引いて、お客さんを迎える</span></label>
+    </div>
+    <div class="checkbar"><span class="progress" id="progress">0 / 9</span><button type="button" id="reset">チェックを外す</button></div>
+    <p class="callout">起動後にアプリやリモコンで姿勢を変えると、画面左上の <code>STANDING</code> / <code>SITTING</code> と実際がずれます。ずれたら <kbd>ESC</kbd> で終了し、Go2 を立たせてから起動し直します。</p>
+  </section>
+
+  <section id="stop">
+    <header><h2>止める・終わる</h2></header>
+    <div class="tbl"><table>
+      <thead><tr><th>場面</th><th>すること</th></tr></thead>
+      <tbody>
+        <tr><td>少し様子がおかしい</td><td><kbd>スペース</kbd> で一時停止。落ち着いたらもう一度 <kbd>スペース</kbd></td></tr>
+        <tr><td>プログラムが反応しない</td><td>黒い画面（ターミナル）をクリックして <kbd>Ctrl</kbd>+<kbd>C</kbd></td></tr>
+        <tr class="hot"><td>止まらない・倒れそう</td><td>Mac は閉じず、<b>アプリかリモコンで止める・伏せさせる</b></td></tr>
+        <tr><td>休憩・終了</td><td><kbd>ESC</kbd> で終了 → 必要ならアプリで伏せさせて電源を切る</td></tr>
+        <tr><td>バッテリー交換</td><td><kbd>ESC</kbd> で終了してから替える。再開は当日チェックの最初から</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="crowd">
+    <header><h2>人が多いとき</h2><p class="sub">前を大勢が通っても誤作動しないよう、4 つのふるいを入れています</p></header>
+    <div class="filters">
+      <div class="f"><h3>小さく映る手は無視</h3><code>--min-size 0.12</code><p>後ろを通る人の手は小さく映る。画面の <code>size</code> の行に右手の大きさが出る。</p></div>
+      <div class="f"><h3>下を向いた手は無視</h3><code>DOWN</code><p>ぶら下げて歩く人の手は使わない。<code>size</code> の行で大きさの横に DOWN と出る。</p></div>
+      <div class="f"><h3>いちばん近い手だけ</h3><code>R</code><p>右手が何人分映っても、いちばん大きい手だけ使う。その手に R、ほかは灰色。</p></div>
+      <div class="f"><h3>同じ手で 1.5 秒</h3><code>--hold 1.5</code><p>手の位置が急に飛んだら別の人とみなして数え直す。通り過ぎる手では動かない。</p></div>
+    </div>
+    <p>値は起動ファイル（2 つとも）をテキストエディタで開き、<code>--hold 1.5 --min-size 0.12</code> の数字を書き換えます。</p>
+    <div class="tbl"><table>
+      <thead><tr><th>困っていること</th><th>変える値</th></tr></thead>
+      <tbody>
+        <tr><td>遠くの人の手で動いてしまう</td><td><code>--min-size</code> を大きく（0.12 → 0.15）</td></tr>
+        <tr><td>近くで見せても反応しない</td><td><code>size</code> が min より小さいなら <code>--min-size</code> を小さく（0.12 → 0.09）。または「もう少し近くで」と声をかける</td></tr>
+        <tr><td>写真のピースで勝手に動く</td><td><code>--hold</code> を長く（1.5 → 2.0）。チョキを止めるなら <code>--victory none</code></td></tr>
+        <tr><td>反応が遅いと言われる</td><td><code>--hold</code> を短く（1.5 → 1.0）</td></tr>
+        <tr><td>それでも誤作動する</td><td><kbd>スペース</kbd> で一時停止にして、キーで動かす</td></tr>
+      </tbody>
+    </table></div>
+    <p class="callout"><b>--min-size の決め方:</b> 会場で、お客さんに立ってほしい位置（約 1m）から右手を見せて <code>size</code> を読み、その 7 割くらいにする。<code>0.12</code> は仮の値で、Go2 のカメラではまだ確かめていません。</p>
+  </section>
+
+  <section id="victory">
+    <header><h2>チョキの動き（ハートの代わり）</h2><p class="sub">どれもその場で、足を上げない動き</p></header>
+    <div class="tbl"><table>
+      <thead><tr><th>候補</th><th>--victory</th><th>動き</th><th>向き</th></tr></thead>
+      <tbody>
+        <tr><td>首かしげ</td><td><code>tilt</code> 既定</td><td>立ったまま体を約 14° 横に傾けて戻す。いちばん小さく、写真のピースで急に動いても危なくない</td><td class="grade">◎</td></tr>
+        <tr><td>おしりふり</td><td><code>wiggle</code></td><td>おしりを左右にふる</td><td class="grade">○</td></tr>
+        <tr><td>うれしい</td><td><code>content</code></td><td>体をゆらす</td><td class="grade">○</td></tr>
+        <tr><td>伸び</td><td><code>stretch</code></td><td>前足を伸ばして伸びをする。前に人がいると近い</td><td class="grade">△</td></tr>
+        <tr><td>なし</td><td><code>none</code></td><td>チョキに反応しない。人が多すぎるとき</td><td class="grade">—</td></tr>
+      </tbody>
+    </table></div>
+    <p class="callout red"><b>外したもの:</b> ハート・ダンス・宙返り・ジャンプ・飛びかかり・逆立ち・寝転がり（大きい・倒れるおそれ）、脱力 Damp（その場で崩れ落ちる）。</p>
+    <p><b>どれも Go2 Air で動くかは未確認です</b>（確認済みはお手・おすわり・立つだけ）。事前に 1 つずつ試します。</p>
+<pre>cd ~/Documents/doglog/go2-hand-follow
+source .venv/bin/activate
+python try_action.py tilt       # 首かしげ
+python try_action.py wiggle     # おしりふり
+python try_action.py content    # うれしい
+python try_action.py stretch    # 伸び
+# Go2 直結のときは最後に --ap を付ける（例: python try_action.py tilt --ap）</pre>
+    <p>判断は Go2 を見て行います。使えない動きでも応答コード 0 のまま動かないことがあります。「応答コード」「応答なし」が出たら使えない可能性が高いです。同じ動きを 2 回続けて試し、元の姿勢にきれいに戻るかも見ます。</p>
+  </section>
+
+  <section id="trouble">
+    <header><h2>困ったとき</h2></header>
+    <div class="tbl"><table>
+      <thead><tr><th>症状</th><th>対処</th></tr></thead>
+      <tbody>
+        <tr><td><code>RobotBusyError</code></td><td>アプリが開いたまま。完全に終了し、10〜20 秒待ってからダブルクリックし直す</td></tr>
+        <tr><td>「見つかりませんでした」→ <code>LocalSignalingPortError</code></td><td>Mac と Go2 が同じルーター（テザリング）につながっているか。Go2 の起動から 1 分たったか。IP を調べて <code>.env</code> の <code>GO2_IP</code> を書き換える</td></tr>
+        <tr><td>Go2 直結で <code>LocalSignalingPortError</code></td><td>Mac の Wi-Fi が Go2 の Wi-Fi になっているか。Go2 が AP モードになっているか、アプリで確かめる</td></tr>
+        <tr><td>映像のウィンドウが出ない</td><td>数秒待つ。出なければ <kbd>ESC</kbd>（または <kbd>Ctrl</kbd>+<kbd>C</kbd>）で終了してやり直す</td></tr>
+        <tr><td>手に反応しない</td><td>右手か／手のひらを向けているか／指が上か（<code>DOWN</code> が出ていないか）／<code>size</code> が min より大きいか。逆光なら Go2 の向きを変える</td></tr>
+        <tr><td>画面が白っぽい</td><td><code>white</code> が高い。照明の向きを変える。だめなら起動ファイルの最後に <code>--gamma 2.0</code> を足す</td></tr>
+        <tr><td>カクカク・遅い</td><td>画面の fps が 10 未満。ほかのアプリを閉じる。ルーターと Go2 を近づける</td></tr>
+        <tr><td>STANDING / SITTING が逆</td><td><kbd>ESC</kbd> で終了し、Go2 を立たせてから起動し直す</td></tr>
+        <tr><td>立ち上がると少し前に出る</td><td>座った状態から立つとき前に進むことがある（調査中）。前を空けておく</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="prep">
+    <header><h2>持ち物と事前準備</h2><p class="sub">展示会の前日まで・開発担当</p></header>
+    <h3>持ち物</h3>
+    <ul class="list">
+      <li>Go2 Air 本体、充電済みバッテリー（予備があれば）、充電器</li>
+      <li>リモコン（あれば）と、Unitree Go アプリが入ったスマホ（非常停止・立たせる用）</li>
+      <li>Mac と充電器</li>
+      <li>選んだつなぎ方に必要なもの（持ち運び用ルーター、またはテザリング用のスマホと充電ケーブル。Go2 直結なら不要）</li>
+      <li>ロープ・テープ（1m の線）、お客さん向けの手の形の案内</li>
+    </ul>
+    <h3>準備</h3>
+    <ol class="steps">
+      <li>3 通りのつなぎ方を試して、当日使うものを決める。Go2 直結が使えればいちばん簡単。</li>
+      <li><code>.env</code> に <code>GO2_SN</code>（シリアル番号）と <code>GO2_AES_KEY</code> を書く（doc/実機接続手順.md の 3・4）。IP は起動時に自動で探す（Go2 直結では探さないので <code>GO2_AES_KEY</code> だけでよい）。</li>
+      <li><b>本番のつなぎ方で「見つけました」と出ることを確かめる。</b>ルーターやテザリングによっては自動検索が通らず、<code>.env</code> の古い <code>GO2_IP</code> を使ってしまう。</li>
+      <li>当日使う起動ファイルで、当日チェックを一通り行う。</li>
+      <li>チョキの動きを <code>try_action.py</code> で試して決める。</li>
+      <li>会場と同じくらいの明るさ・距離で <code>--min-size</code> を決める。</li>
+    </ol>
+    <div class="pending">
+      <h3>実機でまだ確かめていないこと</h3>
+      <ul class="list">
+        <li>Go2 直結（AP モード）とテザリングでつながるか</li>
+        <li>首かしげなど、ハートの代わりの動きが Air で動くか</li>
+        <li><code>--min-size 0.12</code> が Go2 のカメラで約 1m に当たるか</li>
+        <li>受け付けない時間 4 秒と、座った状態からお手をするときの待ち時間 2 秒が足りているか</li>
+        <li>座った状態から立つときに前に出る原因</li>
+        <li>手を 4 つまで検出しても fps が下がりすぎないか</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>元の文書: go2-hand-follow/doc/展示会マニュアル.md ・ この HTML ファイルはブラウザで開くだけで見られます</footer>
+</div>
+
+<script>
+(function () {
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#checklist input'));
+  var progress = document.getElementById('progress');
+  var KEY = 'go2-expo-checklist';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+  function save(state) { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function update() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    progress.textContent = done + ' / ' + boxes.length + (done === boxes.length ? '  準備完了' : '');
+  }
+  var state = load();
+  boxes.forEach(function (b) {
+    b.checked = !!state[b.id];
+    b.addEventListener('change', function () { state[b.id] = b.checked; save(state); update(); });
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    boxes.forEach(function (b) { b.checked = false; }); state = {}; save(state); update();
+  });
+  update();
+})();
+</script>
+
+</body>
+</html>

@@ -12,7 +12,8 @@ from mediapipe.tasks.python import vision
 # パラメータ
 HAND_DETECTION_CONFIDENCE = 0.5   # 手を見失った後の再検出のしきい値。高いと速い動き(ブレ)で再検出できない
 HAND_TRACKING_CONFIDENCE = 0.5
-MAX_NUM_HANDS = 2       # 両手を検出し、操作には右手だけを使う(左手を先に見つけても右手を選べるように)
+MAX_NUM_HANDS = 4       # 両手を検出し、操作には右手だけを使う(左手を先に見つけても右手を選べるように)。
+                        # 人混みで遠くの人の手に枠を取られて、操作する人の手を見落とさないよう 4 にしている
 
 # ジェスチャー認識モデル(MediaPipe Gesture Recognizer)。手の検出・21点・左右判定・ジェスチャー分類をまとめて行う
 MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models", "gesture_recognizer.task")
@@ -168,14 +169,16 @@ def gesture_of(hand):
 _OTHER_HAND_STYLE = mp_drawing.DrawingSpec(color=(128, 128, 128), thickness=2, circle_radius=2)
 
 
-def draw_hands(frame, hands, label=None):
+def draw_hands(frame, hands, label=None, selected=right_hand):
     """
     検出した手を描く。操作に使う右手は通常の色で R の印を付け、それ以外の手は灰色で描く
 
     Args:
         label: 右手の印の横に出す最終的な判定(例: 'PAW (fingers)')。None なら印だけ
+        selected: 操作に使う手(Hand または None)。省略時は right_hand(hands)
     """
-    selected = right_hand(hands)
+    if callable(selected):
+        selected = selected(hands)
     h, w = frame.shape[:2]
     for hand in hands:
         if hand is selected:
@@ -199,6 +202,31 @@ def deadzone(v, dz):
     if abs(v) < dz:
         return 0.0
     return v - dz if v > 0 else v + dz
+
+
+def hand_size(hand, frame_shape):
+    """手の大きさ(手首〜中指付け根の長さ ÷ 画面の高さ)。大きいほどカメラに近い"""
+    h, w = frame_shape[:2]
+    a, b = hand.landmarks.landmark[0], hand.landmarks.landmark[9]
+    return float(np.hypot((a.x - b.x) * w / h, a.y - b.y))
+
+
+def hand_up_cos(hand, frame_shape):
+    """
+    手(手首→中指付け根)の向きの、真上との cos。1 で指が真上、0 で真横、-1 で真下を向いている
+
+    手をカメラの方へ倒すと画面上では短く見えるが、向きの上下は変わらない。
+    """
+    h, w = frame_shape[:2]
+    a, b = hand.landmarks.landmark[0], hand.landmarks.landmark[9]
+    dx, dy = (b.x - a.x) * w / h, b.y - a.y
+    return float(-dy / (np.hypot(dx, dy) + 1e-9))     # 画面の y は下向きが正なので符号を反転
+
+
+def palm_center(hand):
+    """手のひらの中心(画面上の x, y。0〜1)"""
+    pts = [hand.landmarks.landmark[i] for i in (0, 5, 9, 13, 17)]
+    return float(np.mean([p.x for p in pts])), float(np.mean([p.y for p in pts]))
 
 
 def count_fingers(pts):

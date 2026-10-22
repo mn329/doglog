@@ -56,15 +56,17 @@ def _convert_and_detect(av_frame, recorder=None):
 class Go2HandFollower:
     """Go2ロボット用ハンドジェスチャー追従コントローラー"""
 
-    def __init__(self, robot_ip, aes_key=None, dry_run=False, record=False):
+    def __init__(self, robot_ip, aes_key=None, dry_run=False, record=False, ap=False):
         """
         Args:
-            robot_ip: Go2ロボットのIPアドレス
+            robot_ip: Go2ロボットのIPアドレス(ap=True のときは使わない)
             aes_key: 新しめのファームウェアで必要な AES-128 キー(32桁hex)
             dry_run: True ならロボットを動かさず表示のみ
             record: True なら受信した映像を recordings/ に保存する
+            ap: True なら Go2 自身の Wi-Fi(AP モード)に直接つなぐ。Go2 の IP は 192.168.12.1 に決まっている
         """
         self.robot_ip = robot_ip
+        self.ap = ap
         self.aes_key = aes_key
         self.dry_run = dry_run
         self.recorder = Recorder() if record else None
@@ -79,10 +81,11 @@ class Go2HandFollower:
 
     async def connect(self):
         """ロボットに接続して映像受信を開始"""
-        kwargs = {"ip": self.robot_ip}
+        kwargs = {} if self.ap else {"ip": self.robot_ip}
         if self.aes_key:
             kwargs["aes_128_key"] = self.aes_key
-        self.conn = UnitreeWebRTCConnection(WebRTCConnectionMethod.LocalSTA, **kwargs)
+        method = WebRTCConnectionMethod.LocalAP if self.ap else WebRTCConnectionMethod.LocalSTA
+        self.conn = UnitreeWebRTCConnection(method, **kwargs)
         await self.conn.connect()
 
         if not self.dry_run:
@@ -269,12 +272,14 @@ def main():
                     help="白飛び対策の明るさ補正。1.0 で補正なし、1.5〜2.5 で明るい部分を暗くする")
     ap.add_argument("--record", action="store_true",
                     help="受信した映像を recordings/ に動画で保存する(明るさ補正の前の映像)")
+    ap.add_argument("--ap", action="store_true",
+                    help="Go2 自身の Wi-Fi(AP モード)に Mac を直接つないで使う。--ip は不要")
     args = ap.parse_args()
-    if args.ip is None:
+    if args.ip is None and not args.ap:
         ap.error("Go2 の IP がありません。.env に GO2_IP を書くか --ip で指定してください")
     set_gamma(args.gamma)
 
-    follower = Go2HandFollower(args.ip, args.aes_key, args.dry_run, args.record)
+    follower = Go2HandFollower(args.ip, args.aes_key, args.dry_run, args.record, args.ap)
     try:
         asyncio.run(follower.run())
     except KeyboardInterrupt:
