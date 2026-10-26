@@ -39,7 +39,10 @@ VICTORY_ACTIONS = {
     'heart': 'FingerHeart',     # ハート。後ろ足で立ち上がる大きな動きなので展示会では使わない
     'none': None,               # 何もしない(チョキを無視する)
 }
-TILT_ROLL = 0.25        # 首かしげで傾ける角度 [rad](約14°)
+TILT_ROLL = 0.52        # 首かしげで傾ける角度 [rad](約30°)
+SETTLE_SEC = {'Hello': 3.0}   # 動きが終わるまで待ってから、その場に立たせる秒数
+STANDUP_SEC = 2.0       # 座った状態から立つとき、StandUp のあと BalanceStand までに待つ秒数
+RISE_SEC = 1.0          # 終了時、立ったあと(StandUp → BalanceStand)落ち着くまで待つ秒数
 TILT_SEC = 1.2          # 首かしげで傾けたままにする秒数
 
 
@@ -140,6 +143,12 @@ class Go2Trick(Go2HandFollower):
         if self.webcam is None:
             if self.conn is not None and not self.dry_run:
                 await self._untilt()
+                if self.sitting:
+                    # 座ったまま終わらせない。立ち上がりきる前に止める指令(StopMove)を送らないよう待つ
+                    print("座っているので、立ってから終わります(数秒かかります)")
+                    await self._stand_up()
+                    self.sitting = False
+                    await asyncio.sleep(RISE_SEC)
             await super().disconnect()
             return
         self.cap.release()
@@ -165,29 +174,59 @@ class Go2Trick(Go2HandFollower):
         # チョキは写真のピースでも出るので、座っているときは立ち上がらせず何もしない
         if trick == 'victory' and (self.victory is None or self.sitting):
             return False
+        if self._trick_task is not None and not self._trick_task.done():
+            self._trick_task.cancel()   # 前の動きの「その場に立たせる」待ちが残っていれば取り消す(新しい芸を上書きしないため)
         self._trick_task = asyncio.create_task(self.do_trick(trick))
         return True
 
     async def do_trick(self, trick):
         """指示に応じた動作をさせる"""
         if trick == 'sit':
+            self.sitting = True     # 送る前に記録する(座る途中で終了しても、終了時に立たせるため)
             await self._sport("Sit")
-            self.sitting = True
         elif trick == 'stand':
-            await self._sport("RiseSit")
+            await self._stand_up()
             self.sitting = False
         elif trick == 'victory':
             if self.victory == 'TILT':
                 await self._tilt()
             else:
                 await self._sport(self.victory)
+                await self._settle(self.victory)
         elif trick == 'paw':
             # お手は立った状態から行う
             if self.sitting:
-                await self._sport("RiseSit")
+                await self._stand_up()
                 self.sitting = False
-                await asyncio.sleep(2)
+                await asyncio.sleep(1)
             await self._sport("Hello")
+            await self._settle("Hello")
+
+    async def _stand_up(self):
+        """
+        座った状態から、その場で立つ
+
+        RiseSit(おすわりをやめる)は前に足を出しながら立つので 0.15m ほど前に出る。
+        StandUp で立ってから BalanceStand(足を動かさずに立つ)にすると 0.05m ほどで済む(実機で比べた)。
+        """
+        if self.dry_run:
+            return
+        await self._request(SPORT_CMD["StandUp"])
+        await asyncio.sleep(STANDUP_SEC)
+        await self._request(SPORT_CMD["BalanceStand"])
+
+    async def _settle(self, name):
+        """
+        動きが終わったら、止めてその場に立たせる
+
+        立つ・お手のあと、Go2 は足踏みを続けて少しずつ前に動いてしまう(実機で確認)。
+        StopMove で速さを 0 にし、BalanceStand(足を動かさずに立つ)にする。
+        """
+        if self.dry_run:
+            return
+        await asyncio.sleep(SETTLE_SEC.get(name, 2.0))
+        await self._request(SPORT_CMD["StopMove"])
+        await self._request(SPORT_CMD["BalanceStand"])
 
     async def _tilt(self):
         """首かしげ: その場で体を横に少し傾けて、元に戻す"""
