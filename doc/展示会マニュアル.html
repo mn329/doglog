@@ -162,7 +162,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
   </header>
 
   <nav aria-label="目次">
-    <a href="#panel">早見表</a><a href="#safety">安全</a><a href="#setup">初めての Mac</a><a href="#today">当日チェック</a><a href="#connect">つなぎ方</a><a href="#stop">止める</a><a href="#crowd">人が多いとき</a><a href="#victory">チョキ</a><a href="#trouble">困ったとき</a><a href="#prep">事前準備</a>
+    <a href="#panel">早見表</a><a href="#safety">安全</a><a href="#setup">事前準備</a><a href="#today">当日チェック</a><a href="#connect">つなぎ方</a><a href="#stop">止める</a><a href="#crowd">人が多いとき</a><a href="#victory">チョキ</a><a href="#trouble">困ったとき</a><a href="#prep">事前準備</a>
   </nav>
 
   <div class="panel" id="panel">
@@ -211,7 +211,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
   </section>
 
   <section id="setup">
-    <div class="sh"><h2>初めての Mac の準備</h2><p class="sub">展示会の前日までに、当日使う Mac で一度だけ。Go2 は要らない。インターネットのある場所で、15 分ほど</p></div>
+    <div class="sh"><h2>事前準備</h2><p class="sub">展示会の前日までに、当日使う Mac で一度だけ。Go2 は要らない。インターネットのある場所で、15 分ほど</p></div>
     <p class="callout ok"><b>VS Code も Python も、入れなくてよいです。</b>プログラムは GitHub Desktop で取ってきて、あとは「セットアップ.command」が全部入れます。することは、クリックと、受け取った値の貼り付けだけです。</p>
     <ol class="steps">
       <li>開発担当から 2 つ受け取る。
@@ -265,7 +265,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
     <div class="tbl"><table>
       <thead><tr><th>ダブルクリックするファイル</th><th>いつ</th></tr></thead>
       <tbody>
-        <tr><td><code>セットアップ.command</code></td><td>初めての Mac で一度だけ。新しい版にしたときと、うまく動かなくなったときにも押してよい</td></tr>
+        <tr><td><code>セットアップ.command</code></td><td>事前準備で一度だけ。新しい版にしたときと、うまく動かなくなったときにも押してよい</td></tr>
         <tr><td><code>カメラで試す.command</code></td><td>Go2 なしで、Mac のカメラで手の形を試すとき（前日の確認・練習）</td></tr>
         <tr><td><code>展示会スタート.command</code></td><td>当日、Go2 とつないでデモを始めるとき</td></tr>
         <tr><td><code>IPを変える.command</code></td><td>「見つかりませんでした」と出てつながらないとき。アプリで調べた Go2 の IP を入れる</td></tr>
@@ -291,7 +291,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
       <label><input type="checkbox" id="c3"><span>アプリで Go2 が<b>立っている</b>ことを確かめる<small>座っていたらアプリで立たせる。プログラムは「立っている」前提で始まる</small></span></label>
       <label><input type="checkbox" id="c4"><span><b>アプリを完全に終了する</b>（上にスワイプして閉じる）<small>つながったままだと Mac からつながらない（<code>RobotBusyError</code>）</small></span></label>
       <label><input type="checkbox" id="c5"><span>Mac もテザリングにつなぐ</span></label>
-      <label><input type="checkbox" id="c6"><span>Finder で <code>doglog</code> フォルダ（書類 → GitHub）を開き、<code>展示会スタート.command</code> を<b>ダブルクリック</b><small>「開けません」と出たら「初めての Mac の準備」の 4</small></span></label>
+      <label><input type="checkbox" id="c6"><span>Finder で <code>doglog</code> フォルダ（書類 → GitHub）を開き、<code>展示会スタート.command</code> を<b>ダブルクリック</b><small>「開けません」と出たら「事前準備」の 4</small></span></label>
       <label><input type="checkbox" id="c7"><span>「Go2 (…) を 172.20.10.x で見つけました」「接続OK」と出て、カメラ映像のウィンドウが開く</span></label>
       <label><input type="checkbox" id="c8"><span>自分の右手でパー・人差し指・グー・チョキを試す</span></label>
       <label><input type="checkbox" id="c9"><span>スペースキーで止まり、もう一度押すと再開することを確かめる</span></label>
@@ -413,8 +413,8 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
       <thead><tr><th>症状</th><th>対処</th></tr></thead>
       <tbody>
         <tr><td><code>RobotBusyError</code></td><td>アプリが開いたまま。完全に終了し、10〜20 秒待ってからダブルクリックし直す</td></tr>
-        <tr><td>「見つかりませんでした」→ <code>LocalSignalingPortError</code></td><td>Mac と Go2 が同じテザリングにつながっているか。Go2 の起動から 1 分たったか。アプリで IP を調べて <code>IPを変える.command</code> で入れる。ローカルネットワークの許可（初めての Mac の準備の「当日、初めて Go2 につないだとき」）も確かめる</td></tr>
-        <tr><td>「開けません」「開発元を確認できません」</td><td>システム設定 → プライバシーとセキュリティ →「このまま開く」（初めての Mac の準備の 4）</td></tr>
+        <tr><td>「見つかりませんでした」→ <code>LocalSignalingPortError</code></td><td>Mac と Go2 が同じテザリングにつながっているか。Go2 の起動から 1 分たったか。アプリで IP を調べて <code>IPを変える.command</code> で入れる。ローカルネットワークの許可（事前準備の「当日、初めて Go2 につないだとき」）も確かめる</td></tr>
+        <tr><td>「開けません」「開発元を確認できません」</td><td>システム設定 → プライバシーとセキュリティ →「このまま開く」（事前準備の 4）</td></tr>
         <tr><td>「カメラ 0 を開けません」（カメラで試すとき）</td><td>システム設定 → プライバシーとセキュリティ → カメラ で「ターミナル」をオンにして、もう一度ダブルクリック</td></tr>
         <tr><td>「まだ準備ができていません」</td><td>先に <code>セットアップ.command</code> をダブルクリックする</td></tr>
         <tr><td>セットアップで「×」が出る</td><td>インターネットにつながっているか確かめて、もう一度ダブルクリック。だめなら画面を写真に撮って開発担当へ</td></tr>
@@ -431,7 +431,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
   </section>
 
   <section id="prep">
-    <div class="sh"><h2>持ち物と事前準備</h2><p class="sub">前日まで（Go2 なし）と、当日の開場前（Go2 あり）</p></div>
+    <div class="sh"><h2>持ち物と開場前の準備</h2><p class="sub">前日まで（Go2 なし）と、当日の開場前（Go2 あり）</p></div>
     <div class="twocol">
       <div>
         <h3>持ち物</h3>
@@ -446,7 +446,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
       <div>
         <h3>前日まで（Go2 なしでできる）</h3>
         <ol class="steps">
-          <li>当日使う Mac で「初めての Mac の準備」を済ませ、<code>カメラで試す.command</code> で手の形が判定されることまで確かめる。</li>
+          <li>当日使う Mac で「事前準備」を済ませ、<code>カメラで試す.command</code> で手の形が判定されることまで確かめる。</li>
           <li>テザリング用の iPhone の名前を英数字だけにし、「互換性を優先」をオンにしておく（つなぎ方）。</li>
           <li>Go2 のバッテリー・リモコン・iPhone を充電しておく。</li>
         </ol>
