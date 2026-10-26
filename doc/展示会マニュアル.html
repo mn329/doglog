@@ -170,7 +170,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
       <div class="label">止めたいときは</div>
       <div class="key">スペース</div>
       <p><b>すぐ止めて一時停止</b>します。画面に <code>PAUSED</code> と出て、手に反応しなくなります。もう一度押すと再開します。</p>
-      <p class="then">押す前に、映像のウィンドウを一度クリックしておきます。それでも止まらない・倒れそうなら、スマホのアプリかリモコンで止めます。</p>
+      <p class="then">押す前に、映像のウィンドウを一度クリックしておきます。それでも止まらない・倒れそうなら、Go2 の体を持ち上げて、電源ボタンを長押しすると電源が切れます。</p>
     </div>
 
     <div class="signs">
@@ -196,7 +196,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
       <li><b>Go2 のまわり 1m にロープやテープで線を引き</b>、お客さんは線の外から手を見せる。</li>
       <li>小さな子どもが Go2 に近づいたら、スタッフが間に入る。</li>
       <li>お手をするのは<b>右前足</b>。足が下りてくる場所に手を置かないよう、「手は足の少し前に、ひらを見せて」と声をかける。</li>
-      <li>迷ったら<b>スペースキー</b>。それでも止まらなければアプリかリモコン。</li>
+      <li>迷ったら<b>スペースキー</b>。それでも止まらなければ、<b>Go2 の体を持ち上げて、電源ボタンを長押しする</b>（電源が切れる）。</li>
       <li>動いているときは Go2 に触らない。持ち上げるのは、下の「前に出てしまったとき」だけ。</li>
       <li>立つとき・お手のあとに少しずつ前に出るので、<b>Go2 の前は空けておく</b>。</li>
     </ul>
@@ -298,7 +298,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
       <label><input type="checkbox" id="c10"><span>1m の線を引いて、お客さんを迎える</span></label>
     </div>
     <div class="checkbar"><span class="progress" id="progress">0 / 10</span><button type="button" id="reset">チェックを外す</button></div>
-    <p class="callout">起動後にアプリやリモコンで姿勢を変えると、画面左上の <code>STANDING</code> / <code>SITTING</code> と実際がずれます。ずれたら <kbd>ESC</kbd> で終了し、Go2 を立たせてから起動し直します。</p>
+    <p class="callout">起動後にアプリで姿勢を変えると、画面左上の <code>STANDING</code> / <code>SITTING</code> と実際がずれます。ずれたら <kbd>ESC</kbd> で終了し、Go2 を立たせてから起動し直します。</p>
   </section>
 
   <section id="connect">
@@ -358,7 +358,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
       <tbody>
         <tr><td>少し様子がおかしい</td><td><kbd>スペース</kbd> で一時停止。落ち着いたらもう一度 <kbd>スペース</kbd></td></tr>
         <tr><td>プログラムが反応しない</td><td>黒い画面（ターミナル）をクリックして <kbd>Ctrl</kbd>+<kbd>C</kbd> を 1 回</td></tr>
-        <tr class="hot"><td>止まらない・倒れそう</td><td>Mac は閉じず、<b>アプリかリモコンで止める・伏せさせる</b></td></tr>
+        <tr class="hot"><td>止まらない・倒れそう</td><td><b>Go2 の体を持ち上げて、電源ボタンを長押しする</b>（電源が切れる）。持ち上げるときは胴を両手で、脚の関節に指を入れない</td></tr>
         <tr><td>休憩・終了</td><td><kbd>ESC</kbd> で終了。<b>座っていれば立ってから終わる</b>ので、数秒待つ。必要ならアプリで伏せさせて電源を切る</td></tr>
         <tr><td>バッテリー交換</td><td><kbd>ESC</kbd> で終了してから替える。再開は当日チェックの最初から</td></tr>
       </tbody>
@@ -432,33 +432,31 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
 
   <section id="prep">
     <div class="sh"><h2>持ち物と開場前の準備</h2><p class="sub">前日まで（Go2 なし）と、当日の開場前（Go2 あり）</p></div>
-    <div class="twocol">
-      <div>
-        <h3>持ち物</h3>
-        <ul class="list">
-          <li>Go2 Air 本体、充電済みバッテリー（予備があれば）、充電器</li>
-          <li>リモコン（あれば）と、Unitree Go アプリが入ったスマホ（非常停止・立たせる用）</li>
-          <li>Mac と充電器</li>
-          <li>テザリング用の iPhone と充電ケーブル（テザリング専用にする）</li>
-          <li>ロープ・テープ（1m の線）、お客さん向けの手の形の案内</li>
-        </ul>
-      </div>
-      <div>
-        <h3>前日まで（Go2 なしでできる）</h3>
-        <ol class="steps">
-          <li>当日使う Mac で「事前準備」を済ませ、<code>カメラで試す.command</code> で手の形が判定されることまで確かめる。</li>
-          <li>テザリング用の iPhone の名前を英数字だけにし、「互換性を優先」をオンにしておく（つなぎ方）。</li>
-          <li>Go2 のバッテリー・リモコン・iPhone を充電しておく。</li>
-        </ol>
-        <h3>当日、開場前（Go2 が要る）</h3>
-        <ol class="steps">
-          <li>Go2 をテザリングにつなぐ（つなぎ方）。前にテザリングにつないだ Go2 なら、電源を入れれば自動でつながる。</li>
-          <li><code>展示会スタート.command</code> で「見つけました」「接続OK」と出ることを確かめる。ローカルネットワークの「許可」もこのとき。</li>
-          <li>当日の起動チェックを一通り行い、首かしげ（約 30°）がきれいに動くことを見る。</li>
-          <li>会場の明るさ・距離で <code>--min-size</code> を決める（人が多いとき）。</li>
-        </ol>
-      </div>
-    </div>
+    <h3>持ち物</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>持ち物</th><th>使うところ</th></tr></thead>
+      <tbody>
+        <tr><td>Go2 Air 本体、充電済みバッテリー（予備があれば）、充電器</td><td>デモ</td></tr>
+        <tr><td>Unitree Go アプリが入ったスマホ</td><td>起動前に Go2 を立たせる</td></tr>
+        <tr><td>Mac と充電器</td><td>プログラムを動かす</td></tr>
+        <tr><td>テザリング用の iPhone と充電ケーブル</td><td>Go2 と Mac をつなぐ（テザリング専用にする）</td></tr>
+        <tr><td>ロープ・テープ</td><td>Go2 のまわり 1m の線</td></tr>
+        <tr><td>お客さん向けの手の形の案内</td><td>早見表を印刷して置く</td></tr>
+      </tbody>
+    </table></div>
+    <h3>準備</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>いつ</th><th>やること</th><th>Go2</th></tr></thead>
+      <tbody>
+        <tr><td>前日まで</td><td>当日使う Mac で「事前準備」を済ませ、<code>カメラで試す.command</code> で手の形が判定されることまで確かめる</td><td>要らない</td></tr>
+        <tr><td>前日まで</td><td>テザリング用の iPhone の名前を英数字だけにし、「互換性を優先」をオンにしておく（つなぎ方）</td><td>要らない</td></tr>
+        <tr><td>前日まで</td><td>Go2 のバッテリー・iPhone・Mac を充電しておく</td><td>要らない</td></tr>
+        <tr><td>当日・開場前</td><td>Go2 をテザリングにつなぐ（つなぎ方）。前にテザリングにつないだ Go2 なら、電源を入れれば自動でつながる</td><td>要る</td></tr>
+        <tr><td>当日・開場前</td><td><code>展示会スタート.command</code> で「見つけました」「接続OK」と出ることを確かめる。ローカルネットワークの「許可」もこのとき</td><td>要る</td></tr>
+        <tr><td>当日・開場前</td><td>当日の起動チェックを一通り行い、首かしげ（約 30°）がきれいに動くことを見る</td><td>要る</td></tr>
+        <tr><td>当日・開場前</td><td>会場の明るさ・距離で <code>--min-size</code> を決める（人が多いとき）</td><td>要る</td></tr>
+      </tbody>
+    </table></div>
     <div class="pending">
       <h3>わかっている問題点（10/26 時点）</h3>
       <ul class="list">
