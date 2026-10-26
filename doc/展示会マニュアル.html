@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go2 展示会マニュアル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: one reading column, 1rem=17px. Top = "control panel" (stop key + hand signs) staff glance at during the show; below = reference sections. Floor-tape yellow marks the 1m safety line. */
+:root {
+  --bg: #f4f5f2;
+  --surface: #ffffff;
+  --ink: #1b2226;
+  --muted: #475056;
+  --line: #d3d7d0;
+  --soft: #e9ebe6;
+  --tape: #f2c200;
+  --tape-ink: #1b2226;
+  --stop: #c32f1b;
+  --stop-ink: #ffffff;
+  --stop-soft: #fbe7e2;
+  --ok: #24703f;
+  --ok-soft: #e2f1e6;
+  --note: #fbf2cf;
+  --display: "Dela Gothic One", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14181a; --surface: #1d2326; --ink: #eceee9; --muted: #b3bbbf; --line: #353d41; --soft: #262d31;
+    --tape: #e5b800; --tape-ink: #14181a; --stop: #e5533e; --stop-ink: #ffffff; --stop-soft: #3b201b;
+    --ok: #74d197; --ok-soft: #1a3323; --note: #383015; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14181a; --surface: #1d2326; --ink: #eceee9; --muted: #b3bbbf; --line: #353d41; --soft: #262d31;
+  --tape: #e5b800; --tape-ink: #14181a; --stop: #e5533e; --stop-ink: #ffffff; --stop-soft: #3b201b;
+  --ok: #74d197; --ok-soft: #1a3323; --note: #383015; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { font-size: 17px; scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1rem; line-height: 1.8; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 0 72px; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(1.75rem, 5vw, 2.4rem); line-height: 1.3; margin: 0; text-wrap: balance; }
+h2 { font-weight: 700; font-size: 1.45rem; line-height: 1.4; margin: 0; text-wrap: balance; }
+h3 { font-weight: 700; font-size: 1.1rem; line-height: 1.5; margin: 0; }
+p { margin: 0; }
+b, strong { font-weight: 700; }
+code, kbd { font-family: var(--mono); font-size: .9em; }
+code { background: var(--soft); padding: .1em .4em; border-radius: 4px; overflow-wrap: anywhere; }
+kbd { display: inline-block; min-width: 2em; text-align: center; background: var(--surface); border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 6px; padding: 0 .45em; font-weight: 600; line-height: 1.6; }
+:focus-visible { outline: 3px solid var(--tape); outline-offset: 2px; }
+
+.tape { height: 12px; background: repeating-linear-gradient(-45deg, var(--tape) 0 14px, var(--tape-ink) 14px 28px); }
+
+.top { padding-block: 32px 24px; display: grid; gap: 14px; }
+.eyebrow { font-size: .85rem; letter-spacing: .1em; color: var(--muted); font-weight: 700; }
+.lede { max-width: 60ch; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.fact { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; }
+.fact span { font-size: .85rem; color: var(--muted); font-weight: 700; letter-spacing: .04em; }
+.fact b { font-size: 1.05rem; }
+.fact.no { background: var(--stop-soft); border-color: transparent; }
+
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); margin-inline: -18px; padding: 8px 18px; overflow-x: auto; white-space: nowrap; }
+nav a { display: inline-block; font-size: .92rem; text-decoration: none; padding: .3em .75em; border-radius: 6px; color: var(--ink); font-weight: 500; }
+nav a:hover { background: var(--soft); }
+
+section { padding-block: 48px 0; display: grid; gap: 18px; scroll-margin-top: 60px; }
+.sh { display: grid; gap: 4px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+.sub { color: var(--muted); }
+
+/* control panel */
+.panel { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; padding-top: 24px; }
+@media (max-width: 720px) { .panel { grid-template-columns: minmax(0, 1fr); } }
+.stop { background: var(--stop); color: var(--stop-ink); border-radius: 14px; padding: 22px; display: grid; gap: 14px; align-content: start; }
+.stop .label { font-size: .9rem; letter-spacing: .1em; font-weight: 700; }
+.stop .key { font-family: var(--mono); font-weight: 600; font-size: 1.7rem; background: var(--stop-ink); color: var(--stop); border-radius: 10px; padding: .3em .6em; text-align: center; border-bottom: 5px solid rgba(0,0,0,.25); }
+.stop .then { border-top: 1px solid rgba(255,255,255,.4); padding-top: 12px; }
+.stop code { background: rgba(255,255,255,.2); color: var(--stop-ink); }
+.signs { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 14px; }
+.shead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.shead span { font-weight: 700; color: var(--ok); }
+.sgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 460px) { .sgrid { grid-template-columns: minmax(0, 1fr); } }
+.s { display: grid; grid-template-columns: 2.8rem minmax(0, 1fr); gap: 0 12px; align-items: center; padding: 12px; border-radius: 10px; background: var(--soft); }
+.s .hand { grid-row: span 2; font-size: 2.1rem; line-height: 1; text-align: center; }
+.s b { font-size: 1.05rem; }
+.s small { color: var(--muted); font-size: .9rem; line-height: 1.5; }
+ul.notes { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+
+/* tables */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .88rem; color: var(--muted); font-weight: 700; background: var(--soft); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 700; min-width: 9em; }
+tr.hot td { background: var(--stop-soft); }
+
+ul.list, ol.steps { margin: 0; padding-left: 1.4em; display: grid; gap: 10px; }
+ol.steps > li { padding-left: .2em; }
+ol.steps > li::marker { font-family: var(--mono); font-weight: 600; }
+ol.steps ul { margin: 6px 0 0; padding-left: 1.1em; display: grid; gap: 4px; color: var(--muted); }
+.callout { border-radius: 10px; padding: 14px 16px; background: var(--note); }
+.callout.red { background: var(--stop-soft); }
+.callout.ok { background: var(--ok-soft); }
+
+/* checklist */
+.check { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
+.check label { display: grid; grid-template-columns: 1.7rem minmax(0, 1fr); gap: 8px; padding: 12px; border-radius: 8px; cursor: pointer; align-items: start; }
+.check label + label { border-top: 1px solid var(--line); }
+.check label:hover { background: var(--soft); }
+.check input { width: 1.2rem; height: 1.2rem; margin: .35rem 0 0; accent-color: var(--ok); }
+.check input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+.check span small { display: block; color: var(--muted); font-size: .92rem; }
+.checkbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.progress { font-family: var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+button { font: inherit; font-size: .92rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: .35em 1em; cursor: pointer; }
+button:hover { background: var(--soft); }
+
+/* connection */
+.main-mode { background: var(--surface); border: 2px solid var(--ok); border-radius: 14px; padding: 20px; display: grid; gap: 16px; }
+.tag { justify-self: start; font-size: .85rem; font-weight: 700; padding: .1em .7em; border-radius: 999px; background: var(--ok-soft); color: var(--ok); }
+.file { justify-self: start; font-family: var(--mono); font-size: .9rem; background: var(--soft); border-radius: 6px; padding: .25em .6em; overflow-wrap: anywhere; }
+.path { font-weight: 700; }
+.path i { font-style: normal; color: var(--muted); padding-inline: .3em; }
+.alt { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.alt > div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.alt .bad { color: var(--stop); font-weight: 700; }
+
+.filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.f { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.f code { justify-self: start; }
+.f p { color: var(--muted); font-size: .95rem; }
+.grade { font-weight: 700; font-family: var(--mono); white-space: nowrap; }
+.done { color: var(--ok); font-weight: 700; white-space: nowrap; }
+pre { margin: 0; background: var(--soft); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-family: var(--mono); font-size: .88rem; line-height: 1.7; }
+.twocol { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.twocol > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.pending { border: 2px dashed var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 10px; }
+footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<div class="tape" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">GO2 AIR ・ お手・おすわりデモ ・ スタッフ用</div>
+    <h1>Go2 展示会マニュアル</h1>
+    <p class="lede">プログラムを知らなくても、この順に進めれば動かせます。Go2 はその場から歩かず、手の形を見て、お手・おすわり・立つ・首かしげをします。</p>
+    <div class="facts">
+      <div class="fact"><span>起動するファイル</span><b>展示会スタート.command</b></div>
+      <div class="fact"><span>つなぎ方</span><b>iPhone のテザリング</b></div>
+      <div class="fact no"><span>使わないもの</span><b>追従デモ・ハート・AP モード</b></div>
+    </div>
+  </header>
+
+  <nav aria-label="目次">
+    <a href="#panel">早見表</a><a href="#safety">安全</a><a href="#setup">事前準備</a><a href="#today">当日チェック</a><a href="#connect">つなぎ方</a><a href="#stop">止める</a><a href="#crowd">人が多いとき</a><a href="#victory">チョキ</a><a href="#trouble">困ったとき</a><a href="#prep">事前準備</a>
+  </nav>
+
+  <div class="panel" id="panel">
+    <div class="stop">
+      <div class="label">止めたいときは</div>
+      <div class="key">スペース</div>
+      <p><b>すぐ止めて一時停止</b>します。画面に <code>PAUSED</code> と出て、手に反応しなくなります。もう一度押すと再開します。</p>
+      <p class="then">押す前に、映像のウィンドウを一度クリックしておきます。それでも止まらない・倒れそうなら、Go2 の体を持ち上げて、電源ボタンを長押しすると電源が切れます。</p>
+    </div>
+
+    <div class="signs">
+      <div class="shead"><h3>お客さんの手の形</h3><span>右手で 1.5 秒そのまま</span></div>
+      <div class="sgrid">
+        <div class="s"><div class="hand" aria-hidden="true">✋</div><b>パー → お手</b><small>右前足を上げる。座っていれば先に立つ　<kbd>h</kbd></small></div>
+        <div class="s"><div class="hand" aria-hidden="true">☝️</div><b>人差し指 → おすわり</b><small>中指は軽く曲げればよい　<kbd>s</kbd></small></div>
+        <div class="s"><div class="hand" aria-hidden="true">✊</div><b>グー → 立つ</b><small>座っているときだけ　<kbd>u</kbd></small></div>
+        <div class="s"><div class="hand" aria-hidden="true">✌️</div><b>チョキ → 首かしげ</b><small>約 30° 傾けて戻す。座っているときは何もしない　<kbd>v</kbd></small></div>
+      </div>
+      <ul class="notes">
+        <li>Go2 から約 1m で、<b>手のひらを Go2 の顔に向け、指を上に</b>。</li>
+        <li>左手・遠くの手・下を向いた手には反応しません。</li>
+        <li>動いている約 4 秒（画面に赤い <code>BUSY</code>）は受け付けません。同じ形をもう一度させるときは、一度手を下ろします。</li>
+        <li>キー <kbd>h</kbd> <kbd>s</kbd> <kbd>u</kbd> <kbd>v</kbd> はスタッフ用で、一時停止中も効きます。<kbd>ESC</kbd> で終了します。</li>
+      </ul>
+    </div>
+  </div>
+
+  <section id="safety">
+    <div class="sh"><h2>安全のルール</h2><p class="sub">最初に読む</p></div>
+    <ul class="list">
+      <li><b>Go2 のまわり 1m にロープやテープで線を引き</b>、お客さんは線の外から手を見せる。</li>
+      <li>小さな子どもが Go2 に近づいたら、スタッフが間に入る。</li>
+      <li>お手をするのは<b>右前足</b>。足が下りてくる場所に手を置かないよう、「手は足の少し前に、ひらを見せて」と声をかける。</li>
+      <li>迷ったら<b>スペースキー</b>。それでも止まらなければ、<b>Go2 の体を持ち上げて、電源ボタンを長押しする</b>（電源が切れる）。</li>
+      <li>動いているときは Go2 に触らない。持ち上げるのは、下の「前に出てしまったとき」だけ。</li>
+      <li>立つとき・お手のあとに少しずつ前に出るので、<b>Go2 の前は空けておく</b>。</li>
+    </ul>
+    <div class="callout">
+      <h3>前に出てしまったとき</h3>
+      <ol class="steps">
+        <li>Go2 を<b>持ち上げて、ゆっくり後ろ（元の位置）に下げて</b>置く。</li>
+        <li><b>足が交差したら、持ち上げたまま電源を OFF にする。</b>交差したまま床に置くと、倒れたり足を傷めたりするおそれがある。</li>
+      </ol>
+      <p>持ち上げるときは<b>胴を両手で</b>持つ。約 15kg あるので、できれば 2 人で。<b>脚の関節のすき間に指を入れない</b>（脚が動くとはさまれる）。</p>
+    </div>
+  </section>
+
+  <section id="setup">
+    <div class="sh"><h2>事前準備</h2><p class="sub">展示会の前日までに、当日使う Mac で一度だけ。Go2 は要らない。インターネットのある場所で、15 分ほど</p></div>
+    <p class="callout ok"><b>何も入れる必要はありません。</b><code>セットアップ.command</code> を開くだけです。</p>
+    <ol class="steps">
+      <li>開発担当から 2 つ受け取る。
+        <ul>
+          <li><b>GitHub の招待</b>：会社の GitHub（dotlog-inc）への招待メールが届いたら「Join」を押す。GitHub のアカウントがなければ、先に github.com で作り、ユーザー名を開発担当に伝える。</li>
+          <li><b>接続情報</b>：シリアル番号・Go2 の IP・<b>AES キー</b>（32 桁）。AES キーは Go2 を動かす鍵なので、人に見せない・メモやチャットに残さない。</li>
+        </ul>
+        <div class="tbl"><table>
+          <thead><tr><th>値</th><th>どこでわかるか</th></tr></thead>
+          <tbody>
+            <tr><td>シリアル番号</td><td>Unitree Go アプリの機体の情報、または本体のラベル。<b>わからなければ空のまま Enter でよい</b>（IP でつなぐ）</td></tr>
+            <tr><td>Go2 の IP</td><td>Unitree Go アプリのネットワークの情報。テザリングなら <code>172.20.10.x</code>（10/23 は <code>172.20.10.4</code>）。前日にわからなければ <code>172.20.10.4</code> を入れておき、当日違ったら <code>IPを変える.command</code></td></tr>
+            <tr><td>AES キー</td><td>開発担当から受け取る（取り方は下の「配る側」）。機体ごとに 1 つで、毎回は変わらない</td></tr>
+          </tbody>
+        </table></div>
+      </li>
+      <li><b>GitHub Desktop</b> を desktop.github.com からダウンロードして入れ、開いて自分の GitHub アカウントでサインインする。</li>
+      <li>GitHub Desktop のメニュー <b>File → Clone Repository…</b> を開き、一覧から <code>dotlog-inc/doglog</code> を選んで <b>Clone</b>。
+        <ul>
+          <li>一覧に出ないときは、招待の「Join」がまだ。メールを確かめる。</li>
+          <li>保存先は最初に入っている場所（書類 → GitHub → doglog）のままでよい。</li>
+        </ul>
+      </li>
+      <li>GitHub Desktop のメニュー <b>Repository → Show in Finder</b> でフォルダを開き、<code>セットアップ.command</code> を<b>ダブルクリック</b>する。
+        <ul>
+          <li>「開けません」「開発元を確認できません」と出たら「完了」を押し、<b>システム設定 → プライバシーとセキュリティ</b> の下のほうにある<b>「このまま開く」</b>を押して、Mac のパスワードを入れる。ほかの <code>.command</code> でも、初めて開くときに出たら同じようにする。</li>
+        </ul>
+      </li>
+      <li>黒い画面（ターミナル）が開き、<code>[1/5]</code> から <code>[5/5]</code> まで進む。途中でシリアル番号・IP・AES キーを聞かれたら、<b>貼り付けて Enter</b>。
+        <ul><li>AES キーは貼り付けても画面に出ないが、入っている。そのまま Enter。</li></ul>
+      </li>
+      <li><b>「○ 準備OK」</b>と出たら完了。Enter で閉じる。<b>「×」</b>が出たら、画面を写真に撮って開発担当に送る。</li>
+      <li><code>カメラで試す.command</code> をダブルクリックし、<b>Mac のカメラで</b>手の形を試す（Go2 にはつながない）。
+        <ul>
+          <li>「"ターミナル" がカメラへのアクセスを求めています」と出たら「許可」。</li>
+          <li>映像のウィンドウで右手を 1.5 秒見せる。パーで <code>PAW</code>、人差し指で <code>SIT</code>、そのあとグーで <code>STAND</code>、チョキで <code>VICTORY</code> と左上に出て <code>done</code> になれば、準備は全部できている。<kbd>ESC</kbd> で終わる。</li>
+          <li>手の形の練習にもなる。当日お客さんに説明する人は、ここで慣れておく。</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="callout">
+      <h3>当日、初めて Go2 につないだとき</h3>
+      <p><code>展示会スタート.command</code> を開いて「"ターミナル" がローカルネットワーク上のデバイスを検索…」と出たら<b>「許可」</b>。「許可しない」を押してしまったら、システム設定 → プライバシーとセキュリティ → ローカルネットワーク で「ターミナル」をオンにする。オフのままだと Go2 につながらない。</p>
+      <p>Go2 の IP が前日に入れたものと違ったら、<code>IPを変える.command</code> で入れ直す。</p>
+    </div>
+    <div class="callout">
+      <h3>新しい版にするとき</h3>
+      <p>開発担当から「更新した」と言われたら、GitHub Desktop を開いて上の <b>Fetch origin</b> を押し、<b>Pull origin</b> に変わったらもう一度押す。そのあと <code>セットアップ.command</code> をもう一度ダブルクリックする（接続情報は聞かれない）。</p>
+      <p>起動ファイルの数字（<code>--min-size</code> など）を書き換えていると、GitHub Desktop の左に変更が出て Pull できないことがある。開発担当に相談する。</p>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>ダブルクリックするファイル</th><th>いつ</th></tr></thead>
+      <tbody>
+        <tr><td><code>セットアップ.command</code></td><td>事前準備で一度だけ。新しい版にしたときと、うまく動かなくなったときにも押してよい</td></tr>
+        <tr><td><code>カメラで試す.command</code></td><td>Go2 なしで、Mac のカメラで手の形を試すとき（前日の確認・練習）</td></tr>
+        <tr><td><code>展示会スタート.command</code></td><td>当日、Go2 とつないでデモを始めるとき</td></tr>
+        <tr><td><code>IPを変える.command</code></td><td>「見つかりませんでした」と出てつながらないとき。アプリで調べた Go2 の IP を入れる</td></tr>
+      </tbody>
+    </table></div>
+    <div class="pending">
+      <h3>配る側（開発担当）</h3>
+      <p><b>招待:</b> GitHub の dotlog-inc → doglog → Settings → Collaborators（または組織の People）で、相手の GitHub ユーザー名を招待する。読むだけなら Read の権限でよい。</p>
+      <p><b>プログラムの更新:</b> 開発用のリポジトリで直して実機で確かめたら、<code>./sync_expo.sh</code> で展示会用のフォルダ（<code>~/Documents/doglog/doglog-expo</code>）にコピーし、そこでコミットして push する。展示会用のリポジトリを直接直すと、次のコピーで消える。<code>.env</code>（AES キー）と <code>models/</code> はリポジトリに入っていない。</p>
+      <p><b>接続情報:</b> 3 つとも、自分の Mac の <code>go2-hand-follow/.env</code> に入っている（Finder で <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>.</kbd> を押すと見える。テキストエディットで開く）。一から取るときは、AES キーを Unitree のアカウントで取り出す（パスワードを聞かれる。一覧の「AES-128 key」の列）。<code>--device-type Go2</code> を付けないと「0 devices」になる。渡すときは、相手の Mac でセットアップするときに隣で貼り付けるのがいちばん安全。</p>
+      <pre>cd ~/Documents/doglog/go2-hand-follow
+.venv/bin/unitree-fetch-aes-key --email &lt;アカウントのメールアドレス&gt; --device-type Go2</pre>
+      <p><b>GitHub のアカウントがない人には zip:</b> 次のコマンドで「デスクトップ」に作る。受け取った人は zip をダブルクリックして開き、<code>doglog</code> フォルダを「書類」に移してから 4. へ（「このまま開く」が <code>.command</code> ごとに 1 回ずつ出る）。</p>
+      <pre>git -C ~/Documents/doglog/doglog-expo archive --prefix=doglog/ -o ~/Desktop/doglog.zip main</pre>
+    </div>
+  </section>
+
+  <section id="today">
+    <div class="sh"><h2>当日の起動チェック</h2><p class="sub">上から順に。チェックはこの端末のブラウザにだけ残ります</p></div>
+    <div class="check" id="checklist">
+      <label><input type="checkbox" id="c1"><span>テザリング用の iPhone を充電につなぎ、<b>インターネット共有をオン</b>にする<small>「互換性を優先」もオン</small></span></label>
+      <label><input type="checkbox" id="c2"><span>Go2 の電源を入れ、立ち上がるまで約 1 分待つ<small>前に一度テザリングにつないでいれば、Go2 は自動でつながる</small></span></label>
+      <label><input type="checkbox" id="c3"><span>アプリで Go2 が<b>立っている</b>ことを確かめる<small>座っていたらアプリで立たせる。プログラムは「立っている」前提で始まる</small></span></label>
+      <label><input type="checkbox" id="c4"><span><b>アプリを完全に終了する</b>（上にスワイプして閉じる）<small>つながったままだと Mac からつながらない（<code>RobotBusyError</code>）</small></span></label>
+      <label><input type="checkbox" id="c5"><span>Mac もテザリングにつなぐ</span></label>
+      <label><input type="checkbox" id="c6"><span>Finder で <code>doglog</code> フォルダ（書類 → GitHub）を開き、<code>展示会スタート.command</code> を<b>ダブルクリック</b><small>「開けません」と出たら「事前準備」の 4</small></span></label>
+      <label><input type="checkbox" id="c7"><span>「Go2 (…) を 172.20.10.x で見つけました」「接続OK」と出て、カメラ映像のウィンドウが開く</span></label>
+      <label><input type="checkbox" id="c8"><span>自分の右手でパー・人差し指・グー・チョキを試す</span></label>
+      <label><input type="checkbox" id="c9"><span>スペースキーで止まり、もう一度押すと再開することを確かめる</span></label>
+      <label><input type="checkbox" id="c10"><span>1m の線を引いて、お客さんを迎える</span></label>
+    </div>
+    <div class="checkbar"><span class="progress" id="progress">0 / 10</span><button type="button" id="reset">チェックを外す</button></div>
+    <p class="callout">起動後にアプリで姿勢を変えると、画面左上の <code>STANDING</code> / <code>SITTING</code> と実際がずれます。ずれたら <kbd>ESC</kbd> で終了し、Go2 を立たせてから起動し直します。</p>
+  </section>
+
+  <section id="connect">
+    <div class="sh"><h2>つなぎ方</h2><p class="sub">本番は iPhone のテザリング。会場の Wi-Fi は混んでいて切れやすいので使わない</p></div>
+
+    <div class="main-mode">
+      <span class="tag">本番 ・ 10/23 に実機で動いた</span>
+      <h3>iPhone のテザリング</h3>
+      <div class="twocol">
+        <div>
+          <p><b>事前に一度だけ</b></p>
+          <ul class="list">
+            <li>iPhone の名前（設定 → 一般 → 情報 → 名前）を<b>英数字だけ</b>にする（例: <code>Mina</code>）。テザリングの Wi-Fi はこの名前になる。日本語や <code>’</code> が入っていると Go2 がつなげない。</li>
+            <li>設定 → インターネット共有 の「Wi-Fi のパスワード」を控える。</li>
+          </ul>
+        </div>
+        <div>
+          <p><b>Go2 をテザリングにつなぐ</b></p>
+          <ol class="steps">
+            <li>iPhone のインターネット共有で「ほかの人の接続を許可」と「<b>互換性を優先</b>」をオン</li>
+            <li>Unitree Go アプリで<br><span class="path">Device<i>→</i>Network<i>→</i>Connection mode<i>→</i>Wi-Fi Mode</span></li>
+            <li>名前に <b>iPhone の名前</b>、パスワードに<b>テザリングのパスワード</b>を入れて Next
+              <ul>
+                <li>名前の欄にはスマホが今つながっている Wi-Fi が入っていることがあるので、必ず書き換える</li>
+                <li><b>Internet remote connection はオン</b>にする（10/23 はオンでつながった）</li>
+                <li>「not found」と出たら、iPhone のインターネット共有の画面を開いてからもう一度</li>
+              </ul>
+            </li>
+            <li>アプリを完全に終了し、Mac もテザリングにつなぐ</li>
+            <li><code>展示会スタート.command</code> をダブルクリック</li>
+          </ol>
+        </div>
+      </div>
+      <p class="sub">一度つないだ設定は Go2 が覚えているので、次からは同じ iPhone のテザリングをオンにすれば自動でつながる。通信の遅れは平均 26ms で、デモには十分。</p>
+    </div>
+
+    <div class="alt">
+      <div>
+        <h3>持ち運び用ルーター（予備）</h3>
+        <div class="file">展示会スタート.command</div>
+        <p>安定していて、Mac もインターネットを使える。ルーターによっては IP の自動検索が通らない。Go2 の IP が途中で変わったことがある。</p>
+      </div>
+      <div>
+        <h3>Go2 直結（AP モード）</h3>
+        <div class="file">展示会スタート(Go2直結).command</div>
+        <p class="bad">Air では使えなかった（10/23）</p>
+        <p>アプリで切り替えても、Mac から Go2 の Wi-Fi が見つからなかった。Wi-Fi の名前の最後は切り替えるたびに変わる。</p>
+      </div>
+    </div>
+    <p class="callout">「見つかりませんでした」と出て接続できないときは、アプリで Go2 の IP（<code>172.20.10.x</code>）を調べ、<code>IPを変える.command</code> をダブルクリックして入れます。10/23 は <code>172.20.10.4</code> でした。</p>
+  </section>
+
+  <section id="stop">
+    <div class="sh"><h2>止める・終わる</h2></div>
+    <div class="tbl"><table>
+      <thead><tr><th>場面</th><th>すること</th></tr></thead>
+      <tbody>
+        <tr><td>少し様子がおかしい</td><td><kbd>スペース</kbd> で一時停止。落ち着いたらもう一度 <kbd>スペース</kbd></td></tr>
+        <tr><td>プログラムが反応しない</td><td>黒い画面（ターミナル）をクリックして <kbd>Ctrl</kbd>+<kbd>C</kbd> を 1 回</td></tr>
+        <tr class="hot"><td>止まらない・倒れそう</td><td><b>Go2 の体を持ち上げて、電源ボタンを長押しする</b>（電源が切れる）。持ち上げるときは胴を両手で、脚の関節に指を入れない</td></tr>
+        <tr><td>休憩・終了</td><td><kbd>ESC</kbd> で終了。<b>座っていれば立ってから終わる</b>ので、数秒待つ。必要ならアプリで伏せさせて電源を切る</td></tr>
+        <tr><td>バッテリー交換</td><td><kbd>ESC</kbd> で終了してから替える。再開は当日チェックの最初から</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="crowd">
+    <div class="sh"><h2>人が多いとき</h2><p class="sub">前を大勢が通っても誤作動しないよう、4 つのふるいを入れています</p></div>
+    <div class="filters">
+      <div class="f"><h3>小さく映る手は無視</h3><code>--min-size 0.12</code><p>後ろを通る人の手は小さく映る。画面の <code>size</code> の行に右手の大きさが出る。</p></div>
+      <div class="f"><h3>下を向いた手は無視</h3><code>DOWN</code><p>ぶら下げて歩く人の手は使わない。<code>size</code> の行で大きさの横に DOWN と出る。</p></div>
+      <div class="f"><h3>いちばん近い手だけ</h3><code>R</code><p>右手が何人分映っても、いちばん大きい手だけ使う。その手に R、ほかは灰色。</p></div>
+      <div class="f"><h3>同じ手で 1.5 秒</h3><code>--hold 1.5</code><p>手の位置が急に飛んだら別の人とみなして数え直す。通り過ぎる手では動かない。</p></div>
+    </div>
+    <p>値は起動ファイルを右クリック →「このアプリケーションで開く」→「テキストエディット」で開き、<code>--hold 1.5 --min-size 0.12</code> の<b>数字だけ</b>を書き換えて保存します。</p>
+    <div class="tbl"><table>
+      <thead><tr><th>困っていること</th><th>変える値</th></tr></thead>
+      <tbody>
+        <tr><td>遠くの人の手で動いてしまう</td><td><code>--min-size</code> を大きく（0.12 → 0.15）</td></tr>
+        <tr><td>近くで見せても反応しない</td><td><code>size</code> が min より小さいなら <code>--min-size</code> を小さく（0.12 → 0.09）。または「もう少し近くで」と声をかける</td></tr>
+        <tr><td>写真のピースで勝手に動く</td><td><code>--hold</code> を長く（1.5 → 2.0）。チョキを止めるなら <code>--victory none</code></td></tr>
+        <tr><td>反応が遅いと言われる</td><td><code>--hold</code> を短く（1.5 → 1.0）</td></tr>
+        <tr><td>それでも誤作動する</td><td><kbd>スペース</kbd> で一時停止にして、キーで動かす</td></tr>
+      </tbody>
+    </table></div>
+    <p class="callout"><b>--min-size の決め方:</b> 会場で、お客さんに立ってほしい位置（約 1m）から右手を見せて <code>size</code> を読み、その 7 割くらいにします。<code>0.12</code> は仮の値で、Go2 のカメラではまだ確かめていません。</p>
+  </section>
+
+  <section id="victory">
+    <div class="sh"><h2>チョキの動き</h2><p class="sub">ハートの代わり。どれもその場で、足を上げない動き</p></div>
+    <div class="tbl"><table>
+      <thead><tr><th>候補</th><th>--victory</th><th>動き</th><th>向き</th><th>実機</th></tr></thead>
+      <tbody>
+        <tr><td>首かしげ</td><td><code>tilt</code> 既定</td><td>立ったまま体を約 30° 横に傾けて戻す</td><td class="grade">◎</td><td class="done">確認済み</td></tr>
+        <tr><td>おしりふり</td><td><code>wiggle</code></td><td>おしりを左右にふる</td><td class="grade">○</td><td>未確認</td></tr>
+        <tr><td>うれしい</td><td><code>content</code></td><td>体をゆらす</td><td class="grade">○</td><td>未確認</td></tr>
+        <tr><td>伸び</td><td><code>stretch</code></td><td>前足を伸ばして伸びをする。前に人がいると近い</td><td class="grade">△</td><td>未確認</td></tr>
+        <tr><td>なし</td><td><code>none</code></td><td>チョキに反応しない。人が多すぎるとき</td><td class="grade">—</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+    <p class="callout red"><b>外したもの:</b> ハート・ダンス・宙返り・ジャンプ・飛びかかり・逆立ち・寝転がり（大きい・倒れるおそれ）、脱力 Damp（その場で崩れ落ちる）。</p>
+    <p>未確認の動きは、事前に 1 つずつ試します。判断は Go2 を見て行い、同じ動きを 2 回続けて、元の姿勢にきれいに戻るかも見ます。</p>
+<pre>cd ~/Documents/GitHub/doglog
+.venv/bin/python try_action.py wiggle     # おしりふり
+.venv/bin/python try_action.py content    # うれしい
+.venv/bin/python try_action.py stretch    # 伸び</pre>
+  </section>
+
+  <section id="trouble">
+    <div class="sh"><h2>困ったとき</h2></div>
+    <div class="tbl"><table>
+      <thead><tr><th>症状</th><th>対処</th></tr></thead>
+      <tbody>
+        <tr><td><code>RobotBusyError</code></td><td>アプリが開いたまま。完全に終了し、10〜20 秒待ってからダブルクリックし直す</td></tr>
+        <tr><td>「見つかりませんでした」→ <code>LocalSignalingPortError</code></td><td>Mac と Go2 が同じテザリングにつながっているか。Go2 の起動から 1 分たったか。アプリで IP を調べて <code>IPを変える.command</code> で入れる。ローカルネットワークの許可（事前準備の「当日、初めて Go2 につないだとき」）も確かめる</td></tr>
+        <tr><td>「開けません」「開発元を確認できません」</td><td>システム設定 → プライバシーとセキュリティ →「このまま開く」（事前準備の 4）</td></tr>
+        <tr><td>「カメラ 0 を開けません」（カメラで試すとき）</td><td>システム設定 → プライバシーとセキュリティ → カメラ で「ターミナル」をオンにして、もう一度ダブルクリック</td></tr>
+        <tr><td>「まだ準備ができていません」</td><td>先に <code>セットアップ.command</code> をダブルクリックする</td></tr>
+        <tr><td>セットアップで「×」が出る</td><td>インターネットにつながっているか確かめて、もう一度ダブルクリック。だめなら画面を写真に撮って開発担当へ</td></tr>
+        <tr><td>Go2 がテザリングにつながらない</td><td>「互換性を優先」がオンか。iPhone の名前が英数字だけか。インターネット共有の画面を開いたまま、アプリでもう一度つなぐ</td></tr>
+        <tr><td>黒い画面に <code>応答なし</code> や <code>InvalidStateError</code> がたくさん出る</td><td>Go2 の返事が遅れて届いているだけ。Go2 が動いていれば気にしなくてよい</td></tr>
+        <tr><td>映像のウィンドウが出ない</td><td>数秒待つ。出なければ <kbd>ESC</kbd>（または <kbd>Ctrl</kbd>+<kbd>C</kbd>）で終了してやり直す</td></tr>
+        <tr><td>手に反応しない</td><td>右手か／手のひらを向けているか／指が上か（<code>DOWN</code> が出ていないか）／<code>size</code> が min より大きいか。逆光なら Go2 の向きを変える</td></tr>
+        <tr><td>画面が白っぽい</td><td><code>white</code> が高い。照明の向きを変える。だめなら起動ファイルの最後に <code>--gamma 2.0</code> を足す</td></tr>
+        <tr><td>カクカク・遅い</td><td>画面の fps が 10 未満。ほかのアプリを閉じる。iPhone と Go2 を近づける</td></tr>
+        <tr><td>STANDING / SITTING が逆</td><td><kbd>ESC</kbd> で終了し、Go2 を立たせてから起動し直す</td></tr>
+        <tr><td>立つとき・お手のあとに前に出る</td><td>持ち上げて、ゆっくり後ろに下げて置く。<b>足が交差したら、持ち上げたまま電源を OFF</b>（安全のルールを参照）。立ち方を変えて減らしたが、なくなってはいない</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="prep">
+    <div class="sh"><h2>持ち物と開場前の準備</h2><p class="sub">前日まで（Go2 なし）と、当日の開場前（Go2 あり）</p></div>
+    <h3>持ち物</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>持ち物</th><th>使うところ</th></tr></thead>
+      <tbody>
+        <tr><td>Go2 Air 本体、充電済みバッテリー（予備があれば）、充電器</td><td>デモ</td></tr>
+        <tr><td>Unitree Go アプリが入ったスマホ</td><td>起動前に Go2 を立たせる</td></tr>
+        <tr><td>Mac と充電器</td><td>プログラムを動かす</td></tr>
+        <tr><td>テザリング用の iPhone と充電ケーブル</td><td>Go2 と Mac をつなぐ（テザリング専用にする）</td></tr>
+        <tr><td>ロープ・テープ</td><td>Go2 のまわり 1m の線</td></tr>
+        <tr><td>お客さん向けの手の形の案内</td><td>早見表を印刷して置く</td></tr>
+      </tbody>
+    </table></div>
+    <h3>準備</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>いつ</th><th>やること</th><th>Go2</th></tr></thead>
+      <tbody>
+        <tr><td>前日まで</td><td>当日使う Mac で「事前準備」を済ませ、<code>カメラで試す.command</code> で手の形が判定されることまで確かめる</td><td>要らない</td></tr>
+        <tr><td>前日まで</td><td>テザリング用の iPhone の名前を英数字だけにし、「互換性を優先」をオンにしておく（つなぎ方）</td><td>要らない</td></tr>
+        <tr><td>前日まで</td><td>Go2 のバッテリー・iPhone・Mac を充電しておく</td><td>要らない</td></tr>
+        <tr><td>当日・開場前</td><td>Go2 をテザリングにつなぐ（つなぎ方）。前にテザリングにつないだ Go2 なら、電源を入れれば自動でつながる</td><td>要る</td></tr>
+        <tr><td>当日・開場前</td><td><code>展示会スタート.command</code> で「見つけました」「接続OK」と出ることを確かめる。ローカルネットワークの「許可」もこのとき</td><td>要る</td></tr>
+        <tr><td>当日・開場前</td><td>当日の起動チェックを一通り行い、首かしげ（約 30°）がきれいに動くことを見る</td><td>要る</td></tr>
+        <tr><td>当日・開場前</td><td>会場の明るさ・距離で <code>--min-size</code> を決める（人が多いとき）</td><td>要る</td></tr>
+      </tbody>
+    </table></div>
+    <div class="pending">
+      <h3>わかっている問題点（10/26 時点）</h3>
+      <ul class="list">
+        <li><b>立つとき・お手のあとに少しずつ前に出る。</b>立ち方を変えて減らした（座った状態から立つと約 15cm → 約 5cm）が、なくなっていない。当日は人の手で戻す（安全のルール）。</li>
+        <li><b>接続の予備が弱い。</b>テザリング用の iPhone の電池切れ・着信で止まる。AP モードは Air で使えず、予備はルーターだけ。</li>
+        <li>Go2 の IP の自動検索が不安定で、古い <code>GO2_IP</code> を使ってしまうことがある。IP が変わったら <code>IPを変える.command</code> で入れ直す。</li>
+        <li>黒い画面に「応答なし」「InvalidStateError」が出る。返事が遅れて届くだけで、実害はない。</li>
+      </ul>
+    </div>
+    <div class="pending">
+      <h3>実機でまだ確かめていないこと</h3>
+      <ul class="list">
+        <li>首かしげ以外のチョキの動き（おしりふり・うれしい・伸び）が Air で動くか</li>
+        <li><code>--min-size 0.12</code> が Go2 のカメラで約 1m に当たるか</li>
+        <li>前に出るのを止める方法（立ち方を変えても、展示会デモでは前に出てしまう）</li>
+        <li>受け付けない時間 4 秒が足りているか</li>
+        <li>手を 4 つまで検出しても fps が下がりすぎないか</li>
+      </ul>
+      <p class="sub">10/23 に確認済み: テザリングでの接続、首かしげ、お手・おすわり・立つ、ESC で立ってから終わること。</p>
+    </div>
+  </section>
+
+  <footer>元の文書: doc/展示会マニュアル.md（2026-10-26 更新）</footer>
+</div>
+
+<script>
+(function () {
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#checklist input'));
+  var progress = document.getElementById('progress');
+  var KEY = 'go2-expo-checklist-v2';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+  function save(state) { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function update() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    progress.textContent = done + ' / ' + boxes.length + (done === boxes.length ? '  準備完了' : '');
+  }
+  var state = load();
+  boxes.forEach(function (b) {
+    b.checked = !!state[b.id];
+    b.addEventListener('change', function () { state[b.id] = b.checked; save(state); update(); });
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    boxes.forEach(function (b) { b.checked = false; }); state = {}; save(state); update();
+  });
+  update();
+})();
+</script>
+</body>
+</html>
