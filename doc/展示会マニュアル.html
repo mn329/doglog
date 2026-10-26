@@ -211,7 +211,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
   </section>
 
   <section id="setup">
-    <div class="sh"><h2>初めての Mac の準備</h2><p class="sub">その Mac で一度だけ。インターネットのある場所で、15 分ほど</p></div>
+    <div class="sh"><h2>初めての Mac の準備</h2><p class="sub">展示会の前日までに、当日使う Mac で一度だけ。Go2 は要らない。インターネットのある場所で、15 分ほど</p></div>
     <p class="callout ok"><b>VS Code も Python も、入れなくてよいです。</b>プログラムは GitHub Desktop で取ってきて、あとは「セットアップ.command」が全部入れます。することは、クリックと、受け取った値の貼り付けだけです。</p>
     <ol class="steps">
       <li>開発担当から 2 つ受け取る。
@@ -223,7 +223,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
           <thead><tr><th>値</th><th>どこでわかるか</th></tr></thead>
           <tbody>
             <tr><td>シリアル番号</td><td>Unitree Go アプリの機体の情報、または本体のラベル。<b>わからなければ空のまま Enter でよい</b>（IP でつなぐ）</td></tr>
-            <tr><td>Go2 の IP</td><td>Unitree Go アプリのネットワークの情報。テザリングなら <code>172.20.10.x</code>（10/23 は <code>172.20.10.4</code>）。あとで変わったら <code>IPを変える.command</code></td></tr>
+            <tr><td>Go2 の IP</td><td>Unitree Go アプリのネットワークの情報。テザリングなら <code>172.20.10.x</code>（10/23 は <code>172.20.10.4</code>）。前日にわからなければ <code>172.20.10.4</code> を入れておき、当日違ったら <code>IPを変える.command</code></td></tr>
             <tr><td>AES キー</td><td>開発担当から受け取る（取り方は下の「配る側」）。機体ごとに 1 つで、毎回は変わらない</td></tr>
           </tbody>
         </table></div>
@@ -244,10 +244,19 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
         <ul><li>AES キーは貼り付けても画面に出ないが、入っている。そのまま Enter。</li></ul>
       </li>
       <li><b>「○ 準備OK」</b>と出たら完了。Enter で閉じる。<b>「×」</b>が出たら、画面を写真に撮って開発担当に送る。</li>
-      <li>初めて <code>展示会スタート.command</code> を開いたとき、「"ターミナル" がローカルネットワーク上のデバイスを検索…」と出たら<b>「許可」</b>。
-        <ul><li>「許可しない」を押してしまったら、システム設定 → プライバシーとセキュリティ → ローカルネットワーク で「ターミナル」をオンにする。オフのままだと Go2 につながらない。</li></ul>
+      <li><code>カメラで試す.command</code> をダブルクリックし、<b>Mac のカメラで</b>手の形を試す（Go2 にはつながない）。
+        <ul>
+          <li>「"ターミナル" がカメラへのアクセスを求めています」と出たら「許可」。</li>
+          <li>映像のウィンドウで右手を 1.5 秒見せる。パーで <code>PAW</code>、人差し指で <code>SIT</code>、そのあとグーで <code>STAND</code>、チョキで <code>VICTORY</code> と左上に出て <code>done</code> になれば、準備は全部できている。<kbd>ESC</kbd> で終わる。</li>
+          <li>手の形の練習にもなる。当日お客さんに説明する人は、ここで慣れておく。</li>
+        </ul>
       </li>
     </ol>
+    <div class="callout">
+      <h3>当日、初めて Go2 につないだとき</h3>
+      <p><code>展示会スタート.command</code> を開いて「"ターミナル" がローカルネットワーク上のデバイスを検索…」と出たら<b>「許可」</b>。「許可しない」を押してしまったら、システム設定 → プライバシーとセキュリティ → ローカルネットワーク で「ターミナル」をオンにする。オフのままだと Go2 につながらない。</p>
+      <p>Go2 の IP が前日に入れたものと違ったら、<code>IPを変える.command</code> で入れ直す。</p>
+    </div>
     <div class="callout">
       <h3>新しい版にするとき</h3>
       <p>開発担当から「更新した」と言われたら、GitHub Desktop を開いて上の <b>Fetch origin</b> を押し、<b>Pull origin</b> に変わったらもう一度押す。そのあと <code>セットアップ.command</code> をもう一度ダブルクリックする（接続情報は聞かれない）。</p>
@@ -257,7 +266,8 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
       <thead><tr><th>ダブルクリックするファイル</th><th>いつ</th></tr></thead>
       <tbody>
         <tr><td><code>セットアップ.command</code></td><td>初めての Mac で一度だけ。新しい版にしたときと、うまく動かなくなったときにも押してよい</td></tr>
-        <tr><td><code>展示会スタート.command</code></td><td>毎回、デモを始めるとき</td></tr>
+        <tr><td><code>カメラで試す.command</code></td><td>Go2 なしで、Mac のカメラで手の形を試すとき（前日の確認・練習）</td></tr>
+        <tr><td><code>展示会スタート.command</code></td><td>当日、Go2 とつないでデモを始めるとき</td></tr>
         <tr><td><code>IPを変える.command</code></td><td>「見つかりませんでした」と出てつながらないとき。アプリで調べた Go2 の IP を入れる</td></tr>
       </tbody>
     </table></div>
@@ -403,8 +413,9 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
       <thead><tr><th>症状</th><th>対処</th></tr></thead>
       <tbody>
         <tr><td><code>RobotBusyError</code></td><td>アプリが開いたまま。完全に終了し、10〜20 秒待ってからダブルクリックし直す</td></tr>
-        <tr><td>「見つかりませんでした」→ <code>LocalSignalingPortError</code></td><td>Mac と Go2 が同じテザリングにつながっているか。Go2 の起動から 1 分たったか。アプリで IP を調べて <code>IPを変える.command</code> で入れる。ローカルネットワークの許可（初めての Mac の準備の 7）も確かめる</td></tr>
+        <tr><td>「見つかりませんでした」→ <code>LocalSignalingPortError</code></td><td>Mac と Go2 が同じテザリングにつながっているか。Go2 の起動から 1 分たったか。アプリで IP を調べて <code>IPを変える.command</code> で入れる。ローカルネットワークの許可（初めての Mac の準備の「当日、初めて Go2 につないだとき」）も確かめる</td></tr>
         <tr><td>「開けません」「開発元を確認できません」</td><td>システム設定 → プライバシーとセキュリティ →「このまま開く」（初めての Mac の準備の 4）</td></tr>
+        <tr><td>「カメラ 0 を開けません」（カメラで試すとき）</td><td>システム設定 → プライバシーとセキュリティ → カメラ で「ターミナル」をオンにして、もう一度ダブルクリック</td></tr>
         <tr><td>「まだ準備ができていません」</td><td>先に <code>セットアップ.command</code> をダブルクリックする</td></tr>
         <tr><td>セットアップで「×」が出る</td><td>インターネットにつながっているか確かめて、もう一度ダブルクリック。だめなら画面を写真に撮って開発担当へ</td></tr>
         <tr><td>Go2 がテザリングにつながらない</td><td>「互換性を優先」がオンか。iPhone の名前が英数字だけか。インターネット共有の画面を開いたまま、アプリでもう一度つなぐ</td></tr>
@@ -420,7 +431,7 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
   </section>
 
   <section id="prep">
-    <div class="sh"><h2>持ち物と事前準備</h2><p class="sub">展示会の前日まで</p></div>
+    <div class="sh"><h2>持ち物と事前準備</h2><p class="sub">前日まで（Go2 なし）と、当日の開場前（Go2 あり）</p></div>
     <div class="twocol">
       <div>
         <h3>持ち物</h3>
@@ -433,13 +444,18 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
         </ul>
       </div>
       <div>
-        <h3>準備</h3>
+        <h3>前日まで（Go2 なしでできる）</h3>
         <ol class="steps">
-          <li>テザリングでつながることを確かめる（予備にルーターも）。</li>
-          <li>当日使う Mac で <code>セットアップ.command</code> を済ませておく（初めての Mac の準備）。AES キーの取り方は doc/実機接続手順.md の 3（開発担当だけ）。</li>
-          <li><b>テザリングで「見つけました」と出ることを確かめる。</b>見つからないと <code>.env</code> の古い <code>GO2_IP</code> を使ってしまう。</li>
-          <li>起動ファイルで、当日チェックを一通り行う。</li>
-          <li>会場と同じくらいの明るさ・距離で <code>--min-size</code> を決める。</li>
+          <li>当日使う Mac で「初めての Mac の準備」を済ませ、<code>カメラで試す.command</code> で手の形が判定されることまで確かめる。</li>
+          <li>テザリング用の iPhone の名前を英数字だけにし、「互換性を優先」をオンにしておく（つなぎ方）。</li>
+          <li>Go2 のバッテリー・リモコン・iPhone を充電しておく。</li>
+        </ol>
+        <h3>当日、開場前（Go2 が要る）</h3>
+        <ol class="steps">
+          <li>Go2 をテザリングにつなぐ（つなぎ方）。前にテザリングにつないだ Go2 なら、電源を入れれば自動でつながる。</li>
+          <li><code>展示会スタート.command</code> で「見つけました」「接続OK」と出ることを確かめる。ローカルネットワークの「許可」もこのとき。</li>
+          <li>当日の起動チェックを一通り行い、首かしげ（約 30°）がきれいに動くことを見る。</li>
+          <li>会場の明るさ・距離で <code>--min-size</code> を決める（人が多いとき）。</li>
         </ol>
       </div>
     </div>

@@ -11,7 +11,7 @@ DEST="${1:-../doglog-expo}"
 FILES=(
   go2_trick.py go2_follow.py hand_control.py config.py try_action.py
   requirements-lock.txt
-  セットアップ.command IPを変える.command 展示会スタート.command "展示会スタート(Go2直結).command"
+  セットアップ.command IPを変える.command カメラで試す.command 展示会スタート.command "展示会スタート(Go2直結).command"
   doc/展示会マニュアル.md doc/展示会マニュアル.html doc/実機接続手順.md
 )
 mkdir -p "$DEST/doc"
