@@ -211,10 +211,14 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
   </section>
 
   <section id="setup">
-    <div class="sh"><h2>初めての Mac の準備</h2><p class="sub">その Mac で一度だけ。インターネットのある場所で、10 分ほど</p></div>
-    <p class="callout ok"><b>VS Code も Python も、入れなくてよいです。</b>必要なものは「セットアップ.command」が全部入れます。することは、git でプログラムを取ってくることと、ダブルクリックと、受け取った値の貼り付けだけです。</p>
+    <div class="sh"><h2>初めての Mac の準備</h2><p class="sub">その Mac で一度だけ。インターネットのある場所で、15 分ほど</p></div>
+    <p class="callout ok"><b>VS Code も Python も、入れなくてよいです。</b>プログラムは GitHub Desktop で取ってきて、あとは「セットアップ.command」が全部入れます。することは、クリックと、受け取った値の貼り付けだけです。</p>
     <ol class="steps">
-      <li>開発担当から<b>接続情報</b>を受け取る：シリアル番号・Go2 の IP・<b>AES キー</b>（32 桁）。AES キーは Go2 を動かす鍵なので、人に見せない・メモやチャットに残さない。
+      <li>開発担当から 2 つ受け取る。
+        <ul>
+          <li><b>GitHub の招待</b>：会社の GitHub（dotlog-inc）への招待メールが届いたら「Join」を押す。GitHub のアカウントがなければ、先に github.com で作り、ユーザー名を開発担当に伝える。</li>
+          <li><b>接続情報</b>：シリアル番号・Go2 の IP・<b>AES キー</b>（32 桁）。AES キーは Go2 を動かす鍵なので、人に見せない・メモやチャットに残さない。</li>
+        </ul>
         <div class="tbl"><table>
           <thead><tr><th>値</th><th>どこでわかるか</th></tr></thead>
           <tbody>
@@ -224,17 +228,16 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
           </tbody>
         </table></div>
       </li>
-      <li>「ターミナル」（アプリケーション → ユーティリティ）を開き、次の 2 行を貼り付けて Enter。「書類」に <code>go2-hand-follow</code> フォルダができる。
-        <pre>cd ~/Documents
-git clone https://github.com/mn329/doglog.git go2-hand-follow</pre>
+      <li><b>GitHub Desktop</b> を desktop.github.com からダウンロードして入れ、開いて自分の GitHub アカウントでサインインする。</li>
+      <li>GitHub Desktop のメニュー <b>File → Clone Repository…</b> を開き、一覧から <code>dotlog-inc/doglog</code> を選んで <b>Clone</b>。
         <ul>
-          <li>最後の <code>go2-hand-follow</code> を消さない（フォルダの名前になる）。</li>
-          <li>「コマンドライン・デベロッパ・ツールをインストールしますか？」と出たら「インストール」。終わったら、もう一度 2 行目を貼り付ける。</li>
+          <li>一覧に出ないときは、招待の「Join」がまだ。メールを確かめる。</li>
+          <li>保存先は最初に入っている場所（書類 → GitHub → doglog）のままでよい。</li>
         </ul>
       </li>
-      <li>Finder で「書類」→ <code>go2-hand-follow</code> を開き、<code>セットアップ.command</code> を<b>ダブルクリック</b>する。
+      <li>GitHub Desktop のメニュー <b>Repository → Show in Finder</b> でフォルダを開き、<code>セットアップ.command</code> を<b>ダブルクリック</b>する。
         <ul>
-          <li>git で取ってきたときは、ふつうはそのまま開く。「開けません」「開発元を確認できません」と出たら「完了」を押し、<b>システム設定 → プライバシーとセキュリティ</b> の下のほうにある<b>「このまま開く」</b>を押して、Mac のパスワードを入れる。</li>
+          <li>「開けません」「開発元を確認できません」と出たら「完了」を押し、<b>システム設定 → プライバシーとセキュリティ</b> の下のほうにある<b>「このまま開く」</b>を押して、Mac のパスワードを入れる。ほかの <code>.command</code> でも、初めて開くときに出たら同じようにする。</li>
         </ul>
       </li>
       <li>黒い画面（ターミナル）が開き、<code>[1/5]</code> から <code>[5/5]</code> まで進む。途中でシリアル番号・IP・AES キーを聞かれたら、<b>貼り付けて Enter</b>。
@@ -247,9 +250,8 @@ git clone https://github.com/mn329/doglog.git go2-hand-follow</pre>
     </ol>
     <div class="callout">
       <h3>新しい版にするとき</h3>
-      <p>開発担当から「更新した」と言われたら、ターミナルで次を貼り付けて Enter。そのあと <code>セットアップ.command</code> をもう一度ダブルクリックする（接続情報は聞かれない）。</p>
-      <pre>cd ~/Documents/go2-hand-follow && git pull</pre>
-      <p>「上書きされます」などと出て止まったら、起動ファイルの数字（<code>--min-size</code> など）を書き換えている。開発担当に相談する。</p>
+      <p>開発担当から「更新した」と言われたら、GitHub Desktop を開いて上の <b>Fetch origin</b> を押し、<b>Pull origin</b> に変わったらもう一度押す。そのあと <code>セットアップ.command</code> をもう一度ダブルクリックする（接続情報は聞かれない）。</p>
+      <p>起動ファイルの数字（<code>--min-size</code> など）を書き換えていると、GitHub Desktop の左に変更が出て Pull できないことがある。開発担当に相談する。</p>
     </div>
     <div class="tbl"><table>
       <thead><tr><th>ダブルクリックするファイル</th><th>いつ</th></tr></thead>
@@ -261,16 +263,13 @@ git clone https://github.com/mn329/doglog.git go2-hand-follow</pre>
     </table></div>
     <div class="pending">
       <h3>配る側（開発担当）</h3>
-      <p><b>プログラム:</b> 上の <code>git clone</code> の URL を伝える（Public リポジトリなので、GitHub のアカウントは要らない）。取ってくるのは <code>main</code> なので、更新は main にマージしてから伝える。<code>.env</code>（AES キー）と <code>models/</code>（顔のデータ）はリポジトリに入っていない。</p>
-      <p><b>接続情報:</b> 3 つとも、自分の Mac の <code>go2-hand-follow/.env</code> に入っている（Finder で <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>.</kbd> を押すと見える。テキストエディットで開く）。一から取るときは、AES キーを Unitree のアカウントで取り出す（パスワードを聞かれる。一覧の「AES-128 key」の列）。<code>--device-type Go2</code> を付けないと「0 devices」になる。</p>
+      <p><b>招待:</b> GitHub の dotlog-inc → doglog → Settings → Collaborators（または組織の People）で、相手の GitHub ユーザー名を招待する。読むだけなら Read の権限でよい。</p>
+      <p><b>プログラムの更新:</b> 開発用のリポジトリで直して実機で確かめたら、<code>./sync_expo.sh</code> で展示会用のフォルダ（<code>~/Documents/doglog/doglog-expo</code>）にコピーし、そこでコミットして push する。展示会用のリポジトリを直接直すと、次のコピーで消える。<code>.env</code>（AES キー）と <code>models/</code> はリポジトリに入っていない。</p>
+      <p><b>接続情報:</b> 3 つとも、自分の Mac の <code>go2-hand-follow/.env</code> に入っている（Finder で <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>.</kbd> を押すと見える。テキストエディットで開く）。一から取るときは、AES キーを Unitree のアカウントで取り出す（パスワードを聞かれる。一覧の「AES-128 key」の列）。<code>--device-type Go2</code> を付けないと「0 devices」になる。渡すときは、相手の Mac でセットアップするときに隣で貼り付けるのがいちばん安全。</p>
       <pre>cd ~/Documents/doglog/go2-hand-follow
 .venv/bin/unitree-fetch-aes-key --email &lt;アカウントのメールアドレス&gt; --device-type Go2</pre>
-      <p>渡すときは、相手の Mac でセットアップするときに隣で貼り付けるのがいちばん安全。</p>
-      <p><b>git が使えない人には zip:</b> 次のコマンドで作る（<code>.venv</code>・<code>.env</code>・<code>models/</code> は入らない）。受け取った人は zip をダブルクリックして開き、フォルダを「書類」に移してから 3. へ。zip のときは「このまま開く」が <code>.command</code> ごとに 1 回ずつ出る。</p>
-      <pre>cd ~/Documents/doglog && zip -r go2-hand-follow.zip go2-hand-follow \
-  -x 'go2-hand-follow/.*' 'go2-hand-follow/.*/*' 'go2-hand-follow/models/*' \
-     'go2-hand-follow/measure_out/*' 'go2-hand-follow/recordings/*' \
-     'go2-hand-follow/experiments/*' '*/__pycache__/*'</pre>
+      <p><b>GitHub のアカウントがない人には zip:</b> 次のコマンドで「デスクトップ」に作る。受け取った人は zip をダブルクリックして開き、<code>doglog</code> フォルダを「書類」に移してから 4. へ（「このまま開く」が <code>.command</code> ごとに 1 回ずつ出る）。</p>
+      <pre>git -C ~/Documents/doglog/doglog-expo archive --prefix=doglog/ -o ~/Desktop/doglog.zip main</pre>
     </div>
   </section>
 
@@ -282,7 +281,7 @@ git clone https://github.com/mn329/doglog.git go2-hand-follow</pre>
       <label><input type="checkbox" id="c3"><span>アプリで Go2 が<b>立っている</b>ことを確かめる<small>座っていたらアプリで立たせる。プログラムは「立っている」前提で始まる</small></span></label>
       <label><input type="checkbox" id="c4"><span><b>アプリを完全に終了する</b>（上にスワイプして閉じる）<small>つながったままだと Mac からつながらない（<code>RobotBusyError</code>）</small></span></label>
       <label><input type="checkbox" id="c5"><span>Mac もテザリングにつなぐ</span></label>
-      <label><input type="checkbox" id="c6"><span>Finder で <code>go2-hand-follow</code> を開き、<code>展示会スタート.command</code> を<b>ダブルクリック</b><small>「開けません」と出たら「初めての Mac の準備」の 3</small></span></label>
+      <label><input type="checkbox" id="c6"><span>Finder で <code>doglog</code> フォルダ（書類 → GitHub）を開き、<code>展示会スタート.command</code> を<b>ダブルクリック</b><small>「開けません」と出たら「初めての Mac の準備」の 4</small></span></label>
       <label><input type="checkbox" id="c7"><span>「Go2 (…) を 172.20.10.x で見つけました」「接続OK」と出て、カメラ映像のウィンドウが開く</span></label>
       <label><input type="checkbox" id="c8"><span>自分の右手でパー・人差し指・グー・チョキを試す</span></label>
       <label><input type="checkbox" id="c9"><span>スペースキーで止まり、もう一度押すと再開することを確かめる</span></label>
@@ -392,11 +391,10 @@ git clone https://github.com/mn329/doglog.git go2-hand-follow</pre>
     </table></div>
     <p class="callout red"><b>外したもの:</b> ハート・ダンス・宙返り・ジャンプ・飛びかかり・逆立ち・寝転がり（大きい・倒れるおそれ）、脱力 Damp（その場で崩れ落ちる）。</p>
     <p>未確認の動きは、事前に 1 つずつ試します。判断は Go2 を見て行い、同じ動きを 2 回続けて、元の姿勢にきれいに戻るかも見ます。</p>
-<pre>cd ~/Documents/doglog/go2-hand-follow
-source .venv/bin/activate
-python try_action.py wiggle     # おしりふり
-python try_action.py content    # うれしい
-python try_action.py stretch    # 伸び</pre>
+<pre>cd ~/Documents/GitHub/doglog
+.venv/bin/python try_action.py wiggle     # おしりふり
+.venv/bin/python try_action.py content    # うれしい
+.venv/bin/python try_action.py stretch    # 伸び</pre>
   </section>
 
   <section id="trouble">
@@ -405,8 +403,8 @@ python try_action.py stretch    # 伸び</pre>
       <thead><tr><th>症状</th><th>対処</th></tr></thead>
       <tbody>
         <tr><td><code>RobotBusyError</code></td><td>アプリが開いたまま。完全に終了し、10〜20 秒待ってからダブルクリックし直す</td></tr>
-        <tr><td>「見つかりませんでした」→ <code>LocalSignalingPortError</code></td><td>Mac と Go2 が同じテザリングにつながっているか。Go2 の起動から 1 分たったか。アプリで IP を調べて <code>IPを変える.command</code> で入れる。ローカルネットワークの許可（初めての Mac の準備の 6）も確かめる</td></tr>
-        <tr><td>「開けません」「開発元を確認できません」</td><td>システム設定 → プライバシーとセキュリティ →「このまま開く」（初めての Mac の準備の 3）</td></tr>
+        <tr><td>「見つかりませんでした」→ <code>LocalSignalingPortError</code></td><td>Mac と Go2 が同じテザリングにつながっているか。Go2 の起動から 1 分たったか。アプリで IP を調べて <code>IPを変える.command</code> で入れる。ローカルネットワークの許可（初めての Mac の準備の 7）も確かめる</td></tr>
+        <tr><td>「開けません」「開発元を確認できません」</td><td>システム設定 → プライバシーとセキュリティ →「このまま開く」（初めての Mac の準備の 4）</td></tr>
         <tr><td>「まだ準備ができていません」</td><td>先に <code>セットアップ.command</code> をダブルクリックする</td></tr>
         <tr><td>セットアップで「×」が出る</td><td>インターネットにつながっているか確かめて、もう一度ダブルクリック。だめなら画面を写真に撮って開発担当へ</td></tr>
         <tr><td>Go2 がテザリングにつながらない</td><td>「互換性を優先」がオンか。iPhone の名前が英数字だけか。インターネット共有の画面を開いたまま、アプリでもう一度つなぐ</td></tr>
@@ -467,7 +465,7 @@ python try_action.py stretch    # 伸び</pre>
     </div>
   </section>
 
-  <footer>元の文書: go2-hand-follow/doc/展示会マニュアル.md（2026-10-26 更新）</footer>
+  <footer>元の文書: doc/展示会マニュアル.md（2026-10-26 更新）</footer>
 </div>
 
 <script>

@@ -6,7 +6,7 @@ GO2 ロボット用のハンドジェスチャー認識・追従システム
 
 ### いちばん簡単な方法(エンジニアでなくても)
 
-`git clone https://github.com/mn329/doglog.git go2-hand-follow` で取ってきて、`セットアップ.command` をダブルクリックする。Python がなくても、uv が Python 3.11・部品(`requirements-lock.txt`)・ジェスチャー認識モデルを入れ、接続情報(`.env`)を聞いてくる。手順は [doc/展示会マニュアル.md](doc/展示会マニュアル.md) の「初めての Mac の準備」。
+展示会でデモを動かす人は、展示会に要るファイルだけを入れた [dotlog-inc/doglog](https://github.com/dotlog-inc/doglog)（Private）を使う。`sync_expo.sh` でこちらからコピーする。どちらも `セットアップ.command` をダブルクリックすれば準備できる。Python がなくても、uv が Python 3.11・部品(`requirements-lock.txt`)・ジェスチャー認識モデルを入れ、接続情報(`.env`)を聞いてくる。手順は [doc/展示会マニュアル.md](doc/展示会マニュアル.md) の「初めての Mac の準備」。
 
 ### 必要なもの(手で入れる場合)
 - Python 3.11(mediapipe 0.10.14 のため)
