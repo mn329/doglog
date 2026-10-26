@@ -219,6 +219,14 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
           <li><code>go2-hand-follow.zip</code>（プログラムのフォルダ）</li>
           <li>接続情報：シリアル番号・Go2 の IP・<b>AES キー</b>（32 桁）。AES キーは Go2 を動かす鍵なので、人に見せない・メモやチャットに残さない。</li>
         </ul>
+        <div class="tbl"><table>
+          <thead><tr><th>値</th><th>どこでわかるか</th></tr></thead>
+          <tbody>
+            <tr><td>シリアル番号</td><td>Unitree Go アプリの機体の情報、または本体のラベル。<b>わからなければ空のまま Enter でよい</b>（IP でつなぐ）</td></tr>
+            <tr><td>Go2 の IP</td><td>Unitree Go アプリのネットワークの情報。テザリングなら <code>172.20.10.x</code>（10/23 は <code>172.20.10.4</code>）。あとで変わったら <code>IPを変える.command</code></td></tr>
+            <tr><td>AES キー</td><td>開発担当から受け取る（取り方は下の「配る側」）。機体ごとに 1 つで、毎回は変わらない</td></tr>
+          </tbody>
+        </table></div>
       </li>
       <li>zip をダブルクリックして開き、出てきた <code>go2-hand-follow</code> フォルダを「書類」に移す。</li>
       <li>フォルダの中の <code>セットアップ.command</code> を<b>ダブルクリック</b>する。
@@ -246,6 +254,10 @@ footer { margin-top: 48px; font-size: .9rem; color: var(--muted); }
     <div class="pending">
       <h3>配る側（開発担当）</h3>
       <p>zip は次のコマンドで作る。<code>.venv</code>（Mac ごとに作り直す）、<code>.env</code>（AES キー）、<code>models/</code>（顔のデータ）は入れない。接続情報は zip とは別に、直接渡す。</p>
+      <p><b>接続情報の出どころ:</b> 3 つとも、開発担当の Mac の <code>go2-hand-follow/.env</code> に入っている（Finder で <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>.</kbd> を押すと見える。テキストエディットで開く）。一から取るときは、AES キーを Unitree のアカウントで取り出す（パスワードを聞かれる。一覧の「AES-128 key」の列）。<code>--device-type Go2</code> を付けないと「0 devices」になる。</p>
+      <pre>cd ~/Documents/doglog/go2-hand-follow
+.venv/bin/unitree-fetch-aes-key --email &lt;アカウントのメールアドレス&gt; --device-type Go2</pre>
+      <p>渡すときは、相手の Mac でセットアップするときに隣で貼り付けるのがいちばん安全。</p>
       <pre>cd ~/Documents/doglog && zip -r go2-hand-follow.zip go2-hand-follow \
   -x 'go2-hand-follow/.*' 'go2-hand-follow/.*/*' 'go2-hand-follow/models/*' \
      'go2-hand-follow/measure_out/*' 'go2-hand-follow/recordings/*' \
